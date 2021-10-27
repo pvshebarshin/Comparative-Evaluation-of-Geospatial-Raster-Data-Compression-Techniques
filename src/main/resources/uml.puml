@@ -1,0 +1,78 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class Compressor
+
+
+BitShavingCompressor <|-- Compressor
+BitGroomingCompressor <|-- Compressor
+FpcCompressor <|-- Compressor
+
+FPC *-- DfcmPredictor
+FPC *--FcmPredictor
+FpcCompressor *-- FPC
+BitGrooming *-- NSD
+BitGroomingCompressor *-- BitGrooming
+BitShavingCompressor *-- BitShaving
+
+abstract class Compressor {
+byte[] compress(double[] data)
+double[] decompress(byte[] data)
+String getParameters()
+String toString()
+}
+
+class FpcCompressor {
+
+}
+
+class BitGroomingCompressor {
+
+}
+
+class BitShavingCompressor {
+
+}
+
+class BitShaving{
+long bitMask
+long ALL_ONES_FOR_DOUBLE
+int FRACTIONAL
+long getBitMask(int bitN)
+BitShavingDouble(int bits)
+double bitShaveForDouble(double value, long bitMask)
+double[] encode(double[] data)
+}
+
+class FPC {
+FcmPredictor predictor1
+DfcmPredictor predictor2
+int indexEncode
+int indexDecode
+compress(byte[] buffer, double[] data)
+decompress(byte[] buffer, double[] data)
+}
+
+class BitGrooming{
+double[] encode(double[] data, NSD nsd)
+}
+
+enum NSD{
+NSD1
+...
+NSD15
+}
+
+class FcmPredictor{
+long[] table
+long getPrediction()
+update(long trueValue)
+}
+class DfcmPredictor{
+long[] table
+long getPrediction()
+update(long trueValue)
+}
+
+
+@enduml
