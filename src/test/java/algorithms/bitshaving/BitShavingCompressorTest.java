@@ -6,10 +6,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
+import java.util.zip.DataFormatException;
 
 @RunWith(value = Parameterized.class)
 public class BitShavingCompressorTest {
@@ -99,7 +101,7 @@ public class BitShavingCompressorTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws DataFormatException, IOException {
         Random random = new Random();
         BitShavingCompressor bitShavingCompressor = new BitShavingCompressor(parameters.bits);
         double[] data = new double[parameters.length];

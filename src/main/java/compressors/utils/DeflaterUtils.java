@@ -57,27 +57,16 @@ public final class DeflaterUtils {
         return output;
     }
 
-    public static byte[] convertLowerAccuracyDoublesToBits(double[] data) {
+    public static byte[] convertLowerAccuracyDoublesToBits(double[] data) throws IOException {
         ByteBuffer bb = ByteBuffer.allocate(data.length * 8);
         for (double value : data) {
             bb.putDouble(value);
         }
-
-        try {
-            return DeflaterUtils.compressByteArray(bb.array());
-        } catch (IOException e) {
-            LOG.error(e);
-        }
-        return new byte[1];
+        return DeflaterUtils.compressByteArray(bb.array());
     }
 
-    public static double[] decompressByteToDoubles(byte[] data) {
-        byte[] decompressedData = null;
-        try {
-            decompressedData = DeflaterUtils.decompressByteArray(data);
-        } catch (IOException | DataFormatException e) {
-            LOG.error(e);
-        }
+    public static double[] decompressByteToDoubles(byte[] data) throws DataFormatException, IOException {
+        byte[] decompressedData = decompressedData = DeflaterUtils.decompressByteArray(data);
         int times = Double.SIZE / Byte.SIZE;
         double[] result = new double[Objects.requireNonNull(decompressedData).length / times];
         for (int i = 0; i < result.length; i++) {

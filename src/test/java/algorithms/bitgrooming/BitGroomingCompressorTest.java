@@ -6,10 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
+import java.util.zip.DataFormatException;
 
 @RunWith(value = Parameterized.class)
 public class BitGroomingCompressorTest {
@@ -42,7 +44,7 @@ public class BitGroomingCompressorTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws DataFormatException, IOException {
         Random random = new Random();
         BitGroomingCompressor bitGroomingCompressor = new BitGroomingCompressor(parameters.nsd);
         double[] data = new double[parameters.length];
