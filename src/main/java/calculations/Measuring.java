@@ -57,5 +57,9 @@ public class Measuring {
             Measuring.this.type = type;
             return this;
         }
+
+        public Measuring build() {
+            return Measuring.this;
+        }
     }
 }
