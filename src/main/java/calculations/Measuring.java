@@ -18,6 +18,13 @@ public class Measuring {
         this.type = type;
     }
 
+    public Measuring() {
+    }
+
+    public static Builder newBuilder() {
+        return new Measuring().new Builder();
+    }
+
     @Override
     public String toString() {
         return name + "," + ratio + "," + time + "," + size + "," + parameters + "," + type;
@@ -55,6 +62,11 @@ public class Measuring {
 
         public Builder setType(String type) {
             Measuring.this.type = type;
+            return this;
+        }
+
+        public Builder setRatio(double ratio) {
+            Measuring.this.ratio = ratio;
             return this;
         }
 
