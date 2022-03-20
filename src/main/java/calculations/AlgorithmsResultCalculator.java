@@ -6,6 +6,8 @@ import compressors.BitGroomingCompressor;
 import compressors.BitShavingCompressor;
 import compressors.FpcCompressor;
 import compressors.utils.DeflaterUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
 
@@ -22,49 +24,59 @@ import java.util.zip.DataFormatException;
 
 public final class AlgorithmsResultCalculator {
 
+    private static final Logger LOG = LogManager.getLogger(AlgorithmsResultCalculator.class);
+
     public void makeCalculations(String directory) throws IOException, DataFormatException {
         List<Compressor> compressors = initList();
         File file = createResultFile();
         try (PrintWriter out = new PrintWriter(file)) {
             out.println("Name,Ratio,Time,Size,Parameters,Type");
 
-            List<Measuring> measurings = new ArrayList<>();
             List<String> fileNameMass = listFilesForFolder(new File(directory));
-            double[] data;
-            byte[] compressedData;
-            long time;
+
             for (String fileName : fileNameMass) {
                 for (Compressor compressor : compressors) {
-                    data = parseRasterFile(fileName);
-
-                    time = System.nanoTime();
-                    compressedData = compressor.compress(data);
-                    time = System.nanoTime() - time;
-                    out.println(Measuring.newBuilder()
-                            .setName(compressor.toString())
-                            .setRatio(DeflaterUtils.getRatio())
-                            .setTime(time)
-                            .setSize(data.length * 8)
-                            .setParameters(compressor.getParameters())
-                            .setType("C")
-                            .build()
-                            .toString());
-
-                    time = System.nanoTime();
-                    compressor.decompress(compressedData);
-                    time = System.nanoTime() - time;
-                    out.println(Measuring.newBuilder()
-                            .setName(compressor.toString())
-                            .setRatio(DeflaterUtils.getRatio())
-                            .setTime(time)
-                            .setSize(data.length * 8)
-                            .setParameters(compressor.getParameters())
-                            .setType("D")
-                            .build()
-                            .toString());
+                    LOG.info(() -> compressor.toString() + " " + compressor.getParameters());
+                    LOG.info(() -> "Begin of Measuring");
+                    makeMeasuring(out, fileName, compressor);
+                    LOG.info(() -> "End of Measuring");
                 }
             }
         }
+    }
+
+    private void makeMeasuring(PrintWriter out, String fileName, Compressor compressor)
+            throws IOException, DataFormatException {
+        double[] data;
+        byte[] compressedData;
+        long time;
+        data = parseRasterFile(fileName);
+
+        time = System.nanoTime();
+        compressedData = compressor.compress(data);
+        time = System.nanoTime() - time;
+        out.println(Measuring.newBuilder()
+                .setName(compressor.toString())
+                .setRatio(DeflaterUtils.getRatio())
+                .setTime(time)
+                .setSize(data.length * 8L)
+                .setParameters(compressor.getParameters())
+                .setType("C")
+                .build()
+                .toString());
+
+        time = System.nanoTime();
+        compressor.decompress(compressedData);
+        time = System.nanoTime() - time;
+        out.println(Measuring.newBuilder()
+                .setName(compressor.toString())
+                .setRatio(DeflaterUtils.getRatio())
+                .setTime(time)
+                .setSize(data.length * 8L)
+                .setParameters(compressor.getParameters())
+                .setType("D")
+                .build()
+                .toString());
     }
 
     private List<String> listFilesForFolder(final File folder) {
@@ -79,11 +91,19 @@ public final class AlgorithmsResultCalculator {
         return fileNameMass;
     }
 
-    private File createResultFile() throws IOException {
+    private File createResultFile() {
         File file = new File("calculations" + File.separator + "calculations.csv");
-        if (!file.exists() && file.createNewFile()) {
-            throw new CalculationException("Unable to create result file: " + file.getAbsolutePath());
+
+        try {
+            if (file.createNewFile()) {
+                LOG.info(() -> "The new result file has been created");
+            } else {
+                LOG.info(() -> "The result file has already been created");
+            }
+        } catch (IOException e) {
+            throw new CalculationException("Unable to create result file: " + file.getAbsolutePath(), e);
         }
+
         return file;
     }
 
@@ -92,6 +112,7 @@ public final class AlgorithmsResultCalculator {
         GridCoverage2D coverage = reader.read(null);
 
         if (coverage == null) {
+            LOG.error(() -> "GridCoverage2D is null");
             throw new CalculationException("Incorrect file name:" + fileName);
         }
 

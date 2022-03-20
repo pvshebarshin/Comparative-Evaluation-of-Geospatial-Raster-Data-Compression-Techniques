@@ -14,8 +14,8 @@ public class LaunchCalculations {
         AlgorithmsResultCalculator calculator = new AlgorithmsResultCalculator();
         try {
             calculator.makeCalculations("resources/data");
-        } catch (IOException | DataFormatException e) {
-            LOG.error(e.getMessage());
+        } catch (IOException | DataFormatException | CalculationException e) {
+            LOG.error(e::getMessage);
         }
     }
 }
