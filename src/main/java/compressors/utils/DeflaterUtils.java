@@ -12,6 +12,8 @@ import java.util.zip.Inflater;
 
 public final class DeflaterUtils {
 
+    public static double ratio;
+
     private static final Logger LOG = LogManager.getLogger(DeflaterUtils.class);
 
     private DeflaterUtils() {
@@ -31,9 +33,12 @@ public final class DeflaterUtils {
         }
         outputStream.close();
 
-//        JavaAlgorithmsResultCalculator.ratio = ((double) output.length) / ((double) data.length);
-//        LOG.info("Original: " + data.length / 1024f + " Kb");
-//        LOG.info("Compressed: " + output.length / 1024f + " Kb");
+        byte[] output = outputStream.toByteArray();
+        ratio = (((double) data.length / (double) output.length));
+
+        LOG.info(() -> "Original: " + data.length / 1024f + " Kb");
+        LOG.info(() -> "Compressed: " + output.length / 1024f + " Kb");
+
         return outputStream.toByteArray();
     }
 
@@ -49,8 +54,12 @@ public final class DeflaterUtils {
         }
         outputStream.close();
 
-//        LOG.info("Original: " + data.length);
-//        LOG.info("Compressed: " + output.length);
+        byte[] output = outputStream.toByteArray();
+        ratio = ((double) output.length) / ((double) data.length);
+
+        LOG.info(() -> "Original: " + data.length / 1024f + " Kb");
+        LOG.info(() -> "Compressed: " + output.length / 1024f + " Kb");
+
         return outputStream.toByteArray();
     }
 
@@ -70,5 +79,9 @@ public final class DeflaterUtils {
             result[i] = ByteBuffer.wrap(decompressedData, i * times, times).getDouble();
         }
         return result;
+    }
+
+    public static double getRatio() {
+        return ratio;
     }
 }
