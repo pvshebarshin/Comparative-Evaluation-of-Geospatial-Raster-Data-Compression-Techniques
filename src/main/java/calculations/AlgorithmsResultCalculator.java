@@ -6,6 +6,7 @@ import compressors.BitGroomingCompressor;
 import compressors.BitShavingCompressor;
 import compressors.FpcCompressor;
 import compressors.utils.DeflaterUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -17,9 +18,13 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.DataFormatException;
 
 public final class AlgorithmsResultCalculator {
@@ -32,14 +37,14 @@ public final class AlgorithmsResultCalculator {
         try (PrintWriter out = new PrintWriter(file)) {
             out.println("Name,Ratio,Time,Size,Parameters,Type");
 
-            List<String> fileNameMass = listFilesForFolder(new File(directory));
+            List<String> fileNameMass = listFilesForFolder(directory);
 
             for (String fileName : fileNameMass) {
                 for (Compressor compressor : compressors) {
-                    LOG.info(() -> compressor.toString() + " " + compressor.getParameters());
-                    LOG.info(() -> "Begin of Measuring");
+                    LOG.log(Level.ALL, () -> compressor.toString() + " " + compressor.getParameters());
+                    LOG.log(Level.ALL,() -> "Begin of Measuring");
                     makeMeasuring(out, fileName, compressor);
-                    LOG.info(() -> "End of Measuring");
+                    LOG.log(Level.ALL,() -> "End of Measuring");
                 }
             }
         }
@@ -79,20 +84,21 @@ public final class AlgorithmsResultCalculator {
                 .toString());
     }
 
-    private List<String> listFilesForFolder(final File folder) {
-        List<String> fileNameMass = new ArrayList<>();
-        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            if (fileEntry.isDirectory()) {
-                listFilesForFolder(fileEntry);
-            } else {
-                fileNameMass.add(fileEntry.getName());
-            }
+    private List<String> listFilesForFolder(final String folder) {
+        try (Stream<Path> stream = Files.walk(Paths.get(folder), 2)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .map(Path::toAbsolutePath)
+                    .map(Path::toString)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new CalculationException(e.getMessage(), e);
         }
-        return fileNameMass;
     }
 
     private File createResultFile() {
-        File file = new File("calculations" + File.separator + "calculations.csv");
+        File file = new File("src" + File.separator + "main"
+                + File.separator + "resources" + File.separator + "calculations.csv");
 
         try {
             if (file.createNewFile()) {
