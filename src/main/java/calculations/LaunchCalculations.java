@@ -12,10 +12,10 @@ public class LaunchCalculations {
 
     public static void main(String[] args) throws DataFormatException, IOException {
         AlgorithmsResultCalculator calculator = new AlgorithmsResultCalculator();
-//        try {
+        try {
             calculator.makeCalculations("src\\main\\resources\\data");
-//        } catch (IOException | DataFormatException | CalculationException e) {
-//            LOG.error(e::getMessage);
-//        }
+        } catch (IOException | DataFormatException | CalculationException e) {
+            LOG.error(e::getMessage);
+        }
     }
 }

@@ -31,6 +31,8 @@ public final class AlgorithmsResultCalculator {
 
     private static final Logger LOG = LogManager.getLogger(AlgorithmsResultCalculator.class);
 
+    private static final int DEPTH_OF_READING_DATA_IN_DIRECTORY = 2;
+
     public void makeCalculations(String directory) throws IOException, DataFormatException {
         List<Compressor> compressors = initList();
         File file = createResultFile();
@@ -85,7 +87,7 @@ public final class AlgorithmsResultCalculator {
     }
 
     private List<String> listFilesForFolder(final String folder) {
-        try (Stream<Path> stream = Files.walk(Paths.get(folder), 2)) {
+        try (Stream<Path> stream = Files.walk(Paths.get(folder), DEPTH_OF_READING_DATA_IN_DIRECTORY)) {
             return stream
                     .filter(file -> !Files.isDirectory(file))
                     .map(Path::toAbsolutePath)

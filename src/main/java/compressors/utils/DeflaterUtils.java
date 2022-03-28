@@ -12,9 +12,9 @@ import java.util.zip.Inflater;
 
 public final class DeflaterUtils {
 
-    public static double ratio;
-
     private static final Logger LOG = LogManager.getLogger(DeflaterUtils.class);
+
+    private static double ratio = -1;
 
     private DeflaterUtils() {
     }
@@ -34,7 +34,7 @@ public final class DeflaterUtils {
         outputStream.close();
 
         byte[] output = outputStream.toByteArray();
-        ratio = (((double) data.length / (double) output.length));
+        ratio = ((double) data.length / (double) output.length);
 
         LOG.info(() -> "Original: " + data.length / 1024f + " Kb");
         LOG.info(() -> "Compressed: " + output.length / 1024f + " Kb");
