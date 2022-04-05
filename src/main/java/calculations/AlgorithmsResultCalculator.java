@@ -6,7 +6,6 @@ import compressors.BitGroomingCompressor;
 import compressors.BitShavingCompressor;
 import compressors.FpcCompressor;
 import compressors.utils.DeflaterUtils;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -43,10 +42,14 @@ public final class AlgorithmsResultCalculator {
 
             for (String fileName : fileNameMass) {
                 for (Compressor compressor : compressors) {
-                    LOG.log(Level.ALL, () -> compressor.toString() + " " + compressor.getParameters());
-                    LOG.log(Level.ALL,() -> "Begin of Measuring");
-                    makeMeasuring(out, fileName, compressor);
-                    LOG.log(Level.ALL,() -> "End of Measuring");
+                    try {
+                        LOG.debug(() -> compressor.toString() + " " + compressor.getParameters());
+                        LOG.debug(() -> "Begin of Measuring");
+                        makeMeasuring(out, fileName, compressor);
+                        LOG.debug(() -> "End of Measuring");
+                    } catch (Exception e) {
+                        LOG.error(e::getMessage);
+                    }
                 }
             }
         }

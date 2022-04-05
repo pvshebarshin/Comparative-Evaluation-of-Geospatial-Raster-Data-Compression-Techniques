@@ -13,9 +13,9 @@ public class LaunchCalculations {
     public static void main(String[] args) throws DataFormatException, IOException {
         AlgorithmsResultCalculator calculator = new AlgorithmsResultCalculator();
         try {
-            calculator.makeCalculations("src\\main\\resources\\data");
+            calculator.makeCalculations("gsrc\\main\\resources\\data");
         } catch (IOException | DataFormatException | CalculationException e) {
-            LOG.error(e::getMessage);
+            LOG.error(e::getCause);
         }
     }
 }

@@ -36,8 +36,8 @@ public final class DeflaterUtils {
         byte[] output = outputStream.toByteArray();
         ratio = ((double) data.length / (double) output.length);
 
-        LOG.info(() -> "Original: " + data.length / 1024f + " Kb");
-        LOG.info(() -> "Compressed: " + output.length / 1024f + " Kb");
+        LOG.debug(() -> "Original: " + data.length / 1024f + " Kb");
+        LOG.debug(() -> "Compressed: " + output.length / 1024f + " Kb");
 
         return outputStream.toByteArray();
     }
@@ -57,8 +57,8 @@ public final class DeflaterUtils {
         byte[] output = outputStream.toByteArray();
         ratio = ((double) output.length) / ((double) data.length);
 
-        LOG.info(() -> "Original: " + data.length / 1024f + " Kb");
-        LOG.info(() -> "Compressed: " + output.length / 1024f + " Kb");
+        LOG.debug(() -> "Compressed: " + output.length / 1024f + " Kb");
+        LOG.debug(() -> "Original: " + data.length / 1024f + " Kb");
 
         return outputStream.toByteArray();
     }
