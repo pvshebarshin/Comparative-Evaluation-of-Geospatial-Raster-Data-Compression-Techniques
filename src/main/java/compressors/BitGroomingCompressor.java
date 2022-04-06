@@ -1,6 +1,5 @@
 package compressors;
 
-import algorithms.Compressor;
 import algorithms.bitgrooming.BitGrooming;
 import algorithms.bitgrooming.NSD;
 import compressors.utils.DeflaterUtils;
@@ -9,6 +8,7 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 
 public class BitGroomingCompressor implements Compressor {
+
     private NSD nsd;
 
     public void setNsd(NSD nsd) {

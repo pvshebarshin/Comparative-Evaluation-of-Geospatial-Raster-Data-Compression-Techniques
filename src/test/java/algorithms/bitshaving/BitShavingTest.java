@@ -10,6 +10,7 @@ import java.util.Collection;
 
 @RunWith(value = Parameterized.class)
 public class BitShavingTest {
+
     private final Parameters parameters;
 
     public BitShavingTest(Parameters parameters) {

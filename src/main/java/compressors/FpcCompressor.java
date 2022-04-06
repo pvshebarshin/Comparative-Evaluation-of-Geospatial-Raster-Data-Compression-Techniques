@@ -1,6 +1,5 @@
 package compressors;
 
-import algorithms.Compressor;
 import algorithms.fpc.FPC;
 import compressors.utils.DeflaterUtils;
 

@@ -1,6 +1,5 @@
 package compressors;
 
-import algorithms.Compressor;
 import algorithms.bitshaving.BitShavingDouble;
 import compressors.utils.DeflaterUtils;
 
@@ -8,6 +7,7 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 
 public class BitShavingCompressor implements Compressor {
+
     private final int bits;
 
     public BitShavingCompressor(int bits) {

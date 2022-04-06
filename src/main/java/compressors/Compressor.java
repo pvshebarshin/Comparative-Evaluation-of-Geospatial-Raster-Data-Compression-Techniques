@@ -1,4 +1,4 @@
-package algorithms;
+package compressors;
 
 import java.io.IOException;
 import java.util.zip.DataFormatException;

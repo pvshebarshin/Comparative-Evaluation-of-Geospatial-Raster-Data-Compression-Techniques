@@ -1,6 +1,6 @@
 package calculations;
 
-import algorithms.Compressor;
+import compressors.Compressor;
 import algorithms.bitgrooming.NSD;
 import compressors.BitGroomingCompressor;
 import compressors.BitShavingCompressor;

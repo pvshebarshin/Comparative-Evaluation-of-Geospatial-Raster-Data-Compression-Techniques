@@ -10,7 +10,9 @@ import java.util.Collection;
 
 @RunWith(value = Parameterized.class)
 public class BitGroomingTest {
+
     private final TestParameter testParameter;
+
     private static final double PI = 3.14159265358979323846264338327950288;
 
     public BitGroomingTest(TestParameter testParameter) {

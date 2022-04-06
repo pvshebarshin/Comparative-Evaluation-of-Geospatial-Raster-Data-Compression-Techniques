@@ -4,9 +4,12 @@ import algorithms.fpc.predictors.DfcmPredictor;
 import algorithms.fpc.predictors.FcmPredictor;
 
 public class FPC {
+
     private static final int LOG_OF_TABLE_SIZE = 16;
+
     private final FcmPredictor predictor1 = new FcmPredictor(LOG_OF_TABLE_SIZE);
     private final DfcmPredictor predictor2 = new DfcmPredictor(LOG_OF_TABLE_SIZE);
+
     private int indexEncode = 0;
     private int indexDecode = 0;
 
