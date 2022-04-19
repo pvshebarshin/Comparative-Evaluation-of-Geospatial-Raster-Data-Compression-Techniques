@@ -38,13 +38,51 @@ public class DigitRoutingTest {
         parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589214}, 13));
         parameters.add(new TestParameter(new double[]{PI}, new double[]{3.1415926535898393}, 14));
         parameters.add(new TestParameter(new double[]{PI}, new double[]{3.1415926535897896}, 15));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589794}, 16));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 17));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 18));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 19));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 20));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 21));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 22));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 23));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 24));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 25));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 26));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 27));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 28));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 29));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 30));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 31));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 32));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 33));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 34));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 35));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 36));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 37));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 38));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 39));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 40));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 41));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 42));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 43));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 44));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 45));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 46));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 47));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 48));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 49));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 50));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 51));
+        parameters.add(new TestParameter(new double[]{PI}, new double[]{3.141592653589793}, 52));
+
         return parameters;
     }
 
     @Test
-    public void bitGroomingTest() {
-        DigitRouting bitGrooming = new DigitRouting();
-        double[] result = bitGrooming.encode(testParameter.inputData, testParameter.nsd);
+    public void digitRouting() {
+        DigitRouting digitRouting = new DigitRouting();
+        double[] result = digitRouting.encode(testParameter.inputData, testParameter.nsd);
         for (int i = 0; i < result.length; i++) {
             Assertions.assertEquals(result[i], testParameter.outputData[i], "Incorrect precision reduction");
         }

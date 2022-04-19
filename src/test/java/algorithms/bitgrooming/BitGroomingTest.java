@@ -43,7 +43,7 @@ public class BitGroomingTest {
     @Test
     public void bitGroomingTest() {
         BitGrooming bitGrooming = new BitGrooming();
-        double[] result = bitGrooming.encode(testParameter.inputData, testParameter.nsd);
+        double[] result = bitGrooming.encode(testParameter.inputData, testParameter.BGNsd);
         for (int i = 0; i < result.length; i++) {
             Assertions.assertEquals(result[i], testParameter.outputData[i], "Incorrect precision reduction");
         }
@@ -53,12 +53,12 @@ public class BitGroomingTest {
         private static int i = 0;
         private final double[] inputData;
         private final double[] outputData;
-        private final NSD nsd;
+        private final NSD BGNsd;
 
-        public TestParameter(double[] inputData, double[] outputData, NSD nsd) {
+        public TestParameter(double[] inputData, double[] outputData, NSD BGNsd) {
             this.inputData = inputData;
             this.outputData = outputData;
-            this.nsd = nsd;
+            this.BGNsd = BGNsd;
         }
 
         @Override

@@ -11,7 +11,11 @@ public class DigitRoutingCompressor implements Compressor {
     private final int significantBits;
 
     public DigitRoutingCompressor(int significantBits) {
-        this.significantBits = significantBits;
+        if (significantBits > 52) {
+            this.significantBits = 52;
+        } else {
+            this.significantBits = Math.max(significantBits, 1);
+        }
     }
 
     @Override

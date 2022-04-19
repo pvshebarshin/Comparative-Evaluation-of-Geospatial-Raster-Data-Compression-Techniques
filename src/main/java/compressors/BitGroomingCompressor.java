@@ -1,7 +1,7 @@
 package compressors;
 
-import algorithms.bitgrooming.BitGrooming;
 import algorithms.bitgrooming.NSD;
+import algorithms.bitgrooming.BitGrooming;
 import compressors.utils.DeflaterUtils;
 
 import java.io.IOException;
@@ -9,24 +9,24 @@ import java.util.zip.DataFormatException;
 
 public class BitGroomingCompressor implements Compressor {
 
-    private NSD nsd;
+    private NSD BGNsd;
 
-    public void setNsd(NSD nsd) {
-        this.nsd = nsd;
+    public void setNsd(NSD BGNsd) {
+        this.BGNsd = BGNsd;
     }
 
     public NSD getNsd() {
-        return nsd;
+        return BGNsd;
     }
 
-    public BitGroomingCompressor(NSD nsd) {
-        this.nsd = nsd;
+    public BitGroomingCompressor(NSD BGNsd) {
+        this.BGNsd = BGNsd;
     }
 
     @Override
     public byte[] compress(double[] data) throws IOException {
         BitGrooming bitGrooming = new BitGrooming();
-        data = bitGrooming.encode(data, nsd);
+        data = bitGrooming.encode(data, BGNsd);
         return DeflaterUtils.convertLowerAccuracyDoublesToBits(data);
     }
 
@@ -42,6 +42,6 @@ public class BitGroomingCompressor implements Compressor {
 
     @Override
     public String getParameters() {
-        return nsd.toString();
+        return BGNsd.toString();
     }
 }

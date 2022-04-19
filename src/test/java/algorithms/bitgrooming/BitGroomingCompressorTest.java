@@ -46,7 +46,7 @@ public class BitGroomingCompressorTest {
     @Test
     public void test() throws DataFormatException, IOException {
         Random random = new Random();
-        BitGroomingCompressor bitGroomingCompressor = new BitGroomingCompressor(parameters.nsd);
+        BitGroomingCompressor bitGroomingCompressor = new BitGroomingCompressor(parameters.BGNsd);
         double[] data = new double[parameters.length];
         for (int i = 0; i < data.length; i++) {
             data[i] = random.nextInt() + random.nextDouble();
@@ -54,7 +54,7 @@ public class BitGroomingCompressorTest {
 
         double[] dataForCheckAccuracy = Arrays.copyOf(data, data.length);
         BitGrooming bitGrooming = new BitGrooming();
-        dataForCheckAccuracy = bitGrooming.encode(dataForCheckAccuracy, parameters.nsd);
+        dataForCheckAccuracy = bitGrooming.encode(dataForCheckAccuracy, parameters.BGNsd);
 
         byte[] compressedData = bitGroomingCompressor.compress(data);
 
@@ -64,17 +64,17 @@ public class BitGroomingCompressorTest {
     }
 
     private static class Parameters {
-        private final NSD nsd;
+        private final NSD BGNsd;
         private final int length;
 
-        public Parameters(NSD nsd, int length) {
-            this.nsd = nsd;
+        public Parameters(NSD BGNsd, int length) {
+            this.BGNsd = BGNsd;
             this.length = length;
         }
 
         @Override
         public String toString() {
-            return "NSD - " + nsd + "; length - " + length;
+            return "NSD - " + BGNsd + "; length - " + length;
         }
     }
 }

@@ -6,8 +6,8 @@ public class BitGrooming {
     private static final int BIT_XPL_NBR_SGN_DBL = 53;
     private static final double BIT_PER_DCM_DGT_PRC = M_LN10 / M_LN2;
 
-    public double[] encode(double[] data, NSD nsd) {
-        double prc_bnr_xct = nsd.getValue() * BIT_PER_DCM_DGT_PRC;
+    public double[] encode(double[] data, NSD BGNsd) {
+        double prc_bnr_xct = BGNsd.getValue() * BIT_PER_DCM_DGT_PRC;
         short prc_bnr_ceil = (short) Math.ceil(prc_bnr_xct);
         short prc_bnr_xpl_rqr = (short) (prc_bnr_ceil + 2);
         int bit_xpl_nbr_sgn = BIT_XPL_NBR_SGN_DBL;

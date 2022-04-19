@@ -1,11 +1,8 @@
 package calculations;
 
-import compressors.Compressor;
-import algorithms.bitgrooming.NSD;
-import compressors.BitGroomingCompressor;
-import compressors.BitShavingCompressor;
-import compressors.FpcCompressor;
+import compressors.*;
 import compressors.utils.DeflaterUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -35,17 +32,19 @@ public final class AlgorithmsResultCalculator {
     public void makeCalculations(String directory) throws IOException, DataFormatException {
         List<Compressor> compressors = initList();
         File file = createResultFile();
-        try (PrintWriter out = new PrintWriter(file)) {
-            out.println("Name,Ratio,Time,Size,Parameters,Type");
+        try (PrintWriter printWriter = new PrintWriter(Files.newOutputStream(file.toPath()), true)) {
+            if (file.length() == 0) {
+                printWriter.append("Name,Ratio,Time,Size,Parameters,Type\n");
+            }
 
             List<String> fileNameMass = listFilesForFolder(directory);
 
             for (String fileName : fileNameMass) {
                 for (Compressor compressor : compressors) {
                     try {
-                        LOG.debug(() -> compressor.toString() + " " + compressor.getParameters());
+                        LOG.log(Level.DEBUG, () -> compressor.toString() + " " + compressor.getParameters());
                         LOG.debug(() -> "Begin of Measuring");
-                        makeMeasuring(out, fileName, compressor);
+                        makeMeasuring(printWriter, fileName, compressor);
                         LOG.debug(() -> "End of Measuring");
                     } catch (Exception e) {
                         LOG.error(e::getMessage);
@@ -55,7 +54,7 @@ public final class AlgorithmsResultCalculator {
         }
     }
 
-    private void makeMeasuring(PrintWriter out, String fileName, Compressor compressor)
+    private void makeMeasuring(PrintWriter printWriter, String fileName, Compressor compressor)
             throws IOException, DataFormatException {
         double[] data;
         byte[] compressedData;
@@ -65,7 +64,7 @@ public final class AlgorithmsResultCalculator {
         time = System.nanoTime();
         compressedData = compressor.compress(data);
         time = System.nanoTime() - time;
-        out.println(Measuring.newBuilder()
+        printWriter.append(Measuring.newBuilder()
                 .setName(compressor.toString())
                 .setRatio(DeflaterUtils.getRatio())
                 .setTime(time)
@@ -73,12 +72,13 @@ public final class AlgorithmsResultCalculator {
                 .setParameters(compressor.getParameters())
                 .setType("C")
                 .build()
-                .toString());
+                .toString())
+                .append(String.valueOf('\n'));
 
         time = System.nanoTime();
         compressor.decompress(compressedData);
         time = System.nanoTime() - time;
-        out.println(Measuring.newBuilder()
+        printWriter.append(Measuring.newBuilder()
                 .setName(compressor.toString())
                 .setRatio(DeflaterUtils.getRatio())
                 .setTime(time)
@@ -86,7 +86,8 @@ public final class AlgorithmsResultCalculator {
                 .setParameters(compressor.getParameters())
                 .setType("D")
                 .build()
-                .toString());
+                .toString())
+                .append(String.valueOf('\n'));
     }
 
     private List<String> listFilesForFolder(final String folder) {
@@ -141,12 +142,15 @@ public final class AlgorithmsResultCalculator {
     private List<Compressor> initList() {
         List<Compressor> compressors = new ArrayList<>();
         compressors.add(new FpcCompressor());
-        for (NSD nsd : NSD.values()) {
-            compressors.add(new BitGroomingCompressor(nsd));
-        }
-        for (int i = 0; i < 53; i++) {
-            compressors.add(new BitShavingCompressor(i));
-        }
+//        for (NSD nsd : NSD.values()) {
+//            compressors.add(new BitGroomingCompressor(nsd));
+//        }
+//        for (int i = 0; i < 53; i++) {
+//            compressors.add(new BitShavingCompressor(i));
+//        }
+//        for (int i = 0; i < 11; i++) {
+//            compressors.add(new DigitRoutingCompressor(i));
+//        }
         return compressors;
     }
 }
