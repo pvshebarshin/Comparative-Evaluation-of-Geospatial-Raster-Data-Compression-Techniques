@@ -9,36 +9,23 @@ import java.util.zip.DataFormatException;
 public class FpcCompressor implements Compressor {
     private static int massLength;
 
-    public void setMassLength(int value) {
+    public static void setMassLength(int value) {
         massLength = value;
     }
 
     @Override
-    public byte[] compress(double[] data) {
+    public byte[] compress(double[] data) throws IOException {
         FPC fpc = new FPC();
         byte[] buffer = new byte[data.length * 8 + data.length + 1];
-        massLength = data.length;
-        fpc.compress(buffer, data);
-        try {
-            return DeflaterUtils.compressByteArray(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new byte[1];
+        setMassLength(data.length);
+        return DeflaterUtils.compressByteArray(fpc.compress(buffer, data));
     }
 
     @Override
-    public double[] decompress(byte[] data) {
+    public double[] decompress(byte[] data) throws DataFormatException, IOException {
         FPC fpc = new FPC();
-        byte[] decompressedBytes = null;
-        try {
-            decompressedBytes = DeflaterUtils.decompressByteArray(data);
-        } catch (IOException | DataFormatException e) {
-            e.printStackTrace();
-        }
         double[] result = new double[massLength];
-        fpc.decompress(decompressedBytes, result);
-        return result;
+        return fpc.decompress(DeflaterUtils.decompressByteArray(data), result);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class FPC {
     private int indexEncode = 0;
     private int indexDecode = 0;
 
-    public void compress(byte[] buffer, double[] data) {
+    public byte[] compress(byte[] buffer, double[] data) {
         for (int i = 0; i < data.length; i += 2) {
             if (i == data.length - 1) {
                 encodeAndPad(buffer, data[i]);
@@ -21,12 +21,14 @@ public class FPC {
                 encode(buffer, data[i], data[i + 1]);
             }
         }
+        return buffer;
     }
 
-    public void decompress(byte[] buffer, double[] data) {
+    public double[] decompress(byte[] buffer, double[] data) {
         for (int i = 0; i < data.length; i += 2) {
             decode(buffer, data, i);
         }
+        return data;
     }
 
     private void decode(byte[] buffer, double[] data, int i) {
