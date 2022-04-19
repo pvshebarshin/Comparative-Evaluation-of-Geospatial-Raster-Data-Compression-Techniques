@@ -13,10 +13,10 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,30 +31,24 @@ public final class AlgorithmsResultCalculator {
 
     public void makeCalculations(String directory) throws IOException, DataFormatException {
         List<Compressor> compressors = initList();
-        File file = createResultFile();
-        try (PrintWriter printWriter = new PrintWriter(Files.newOutputStream(file.toPath()), true)) {
-            if (file.length() == 0) {
-                printWriter.append("Name,Ratio,Time,Size,Parameters,Type\n");
-            }
+        Path path = getResultPath();
+        List<String> fileNameMass = listFilesForFolder(directory);
 
-            List<String> fileNameMass = listFilesForFolder(directory);
-
-            for (String fileName : fileNameMass) {
-                for (Compressor compressor : compressors) {
-                    try {
-                        LOG.log(Level.DEBUG, () -> compressor.toString() + " " + compressor.getParameters());
-                        LOG.debug(() -> "Begin of Measuring");
-                        makeMeasuring(printWriter, fileName, compressor);
-                        LOG.debug(() -> "End of Measuring");
-                    } catch (Exception e) {
-                        LOG.error(e::getMessage);
-                    }
+        for (String fileName : fileNameMass) {
+            for (Compressor compressor : compressors) {
+                try {
+                    LOG.log(Level.DEBUG, () -> compressor.toString() + " " + compressor.getParameters());
+                    LOG.debug(() -> "Begin of Measuring");
+                    makeMeasuring(path, fileName, compressor);
+                    LOG.debug(() -> "End of Measuring");
+                } catch (Exception e) {
+                    LOG.error(e::getMessage);
                 }
             }
         }
     }
 
-    private void makeMeasuring(PrintWriter printWriter, String fileName, Compressor compressor)
+    private void makeMeasuring(Path path, String fileName, Compressor compressor)
             throws IOException, DataFormatException {
         double[] data;
         byte[] compressedData;
@@ -64,30 +58,34 @@ public final class AlgorithmsResultCalculator {
         time = System.nanoTime();
         compressedData = compressor.compress(data);
         time = System.nanoTime() - time;
-        printWriter.append(Measuring.newBuilder()
-                .setName(compressor.toString())
-                .setRatio(DeflaterUtils.getRatio())
-                .setTime(time)
-                .setSize(data.length * 8L)
-                .setParameters(compressor.getParameters())
-                .setType("C")
-                .build()
-                .toString())
-                .append(String.valueOf('\n'));
+        Files.write(
+                path,
+                (Measuring.newBuilder()
+                        .setName(compressor.toString())
+                        .setRatio(DeflaterUtils.getRatio())
+                        .setTime(time)
+                        .setSize(data.length * 8L)
+                        .setParameters(compressor.getParameters())
+                        .setType("C")
+                        .build()
+                        .toString() + '\n').getBytes(),
+                StandardOpenOption.APPEND);
 
         time = System.nanoTime();
         compressor.decompress(compressedData);
         time = System.nanoTime() - time;
-        printWriter.append(Measuring.newBuilder()
-                .setName(compressor.toString())
-                .setRatio(DeflaterUtils.getRatio())
-                .setTime(time)
-                .setSize(data.length * 8L)
-                .setParameters(compressor.getParameters())
-                .setType("D")
-                .build()
-                .toString())
-                .append(String.valueOf('\n'));
+        Files.write(
+                path,
+                (Measuring.newBuilder()
+                        .setName(compressor.toString())
+                        .setRatio(DeflaterUtils.getRatio())
+                        .setTime(time)
+                        .setSize(data.length * 8L)
+                        .setParameters(compressor.getParameters())
+                        .setType("D")
+                        .build()
+                        .toString() + '\n').getBytes(),
+                StandardOpenOption.APPEND);
     }
 
     private List<String> listFilesForFolder(final String folder) {
@@ -102,13 +100,17 @@ public final class AlgorithmsResultCalculator {
         }
     }
 
-    private File createResultFile() {
+    private Path getResultPath() {
         File file = new File("src" + File.separator + "main"
                 + File.separator + "resources" + File.separator + "calculations.csv");
 
         try {
             if (file.createNewFile()) {
                 LOG.info(() -> "The new result file has been created");
+                Files.write(
+                        file.toPath(),
+                        "Name,Ratio,Time,Size,Parameters,Type\n".getBytes(),
+                        StandardOpenOption.APPEND);
             } else {
                 LOG.info(() -> "The result file has already been created");
             }
@@ -116,7 +118,7 @@ public final class AlgorithmsResultCalculator {
             throw new CalculationException("Unable to create result file: " + file.getAbsolutePath(), e);
         }
 
-        return file;
+        return file.toPath();
     }
 
     private static double[] parseRasterFile(String fileName) throws IOException {
