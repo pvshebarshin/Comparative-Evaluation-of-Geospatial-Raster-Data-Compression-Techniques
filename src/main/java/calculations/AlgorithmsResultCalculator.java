@@ -1,5 +1,6 @@
 package calculations;
 
+import algorithms.bitgrooming.NSD;
 import compressors.*;
 import compressors.utils.DeflaterUtils;
 import org.apache.logging.log4j.Level;
@@ -29,10 +30,10 @@ public final class AlgorithmsResultCalculator {
 
     private static final int DEPTH_OF_READING_DATA_IN_DIRECTORY = 2;
 
-    public void makeCalculations(String directory) throws IOException, DataFormatException {
+    public void makeCalculations(String storeDirectory, String resultFilePath) throws IOException, DataFormatException {
         List<Compressor> compressors = initList();
-        Path path = getResultPath();
-        List<String> fileNameMass = listFilesForFolder(directory);
+        Path path = getResultPath(resultFilePath);
+        List<String> fileNameMass = listFilesForFolder(storeDirectory);
 
         for (String fileName : fileNameMass) {
             for (Compressor compressor : compressors) {
@@ -42,7 +43,7 @@ public final class AlgorithmsResultCalculator {
                     makeMeasuring(path, fileName, compressor);
                     LOG.debug(() -> "End of Measuring");
                 } catch (Exception e) {
-                    LOG.error(e::getMessage);
+                    LOG.error(e::getLocalizedMessage);
                 }
             }
         }
@@ -50,10 +51,9 @@ public final class AlgorithmsResultCalculator {
 
     private void makeMeasuring(Path path, String fileName, Compressor compressor)
             throws IOException, DataFormatException {
-        double[] data;
+        double[] data = parseRasterFile(fileName);
         byte[] compressedData;
         long time;
-        data = parseRasterFile(fileName);
 
         time = System.nanoTime();
         compressedData = compressor.compress(data);
@@ -100,9 +100,14 @@ public final class AlgorithmsResultCalculator {
         }
     }
 
-    private Path getResultPath() {
-        File file = new File("src" + File.separator + "main"
-                + File.separator + "resources" + File.separator + "calculations.csv");
+    private Path getResultPath(String resultFilePath) {
+        File file;
+        if (resultFilePath == null || resultFilePath.isEmpty()) {
+            file = new File("src" + File.separator + "main"
+                    + File.separator + "resources" + File.separator + "calculations.csv");
+        } else {
+            file = new File(resultFilePath);
+        }
 
         try {
             if (file.createNewFile()) {
@@ -144,15 +149,15 @@ public final class AlgorithmsResultCalculator {
     private List<Compressor> initList() {
         List<Compressor> compressors = new ArrayList<>();
         compressors.add(new FpcCompressor());
-//        for (NSD nsd : NSD.values()) {
-//            compressors.add(new BitGroomingCompressor(nsd));
-//        }
-//        for (int i = 0; i < 53; i++) {
-//            compressors.add(new BitShavingCompressor(i));
-//        }
-//        for (int i = 0; i < 11; i++) {
-//            compressors.add(new DigitRoutingCompressor(i));
-//        }
+        for (NSD nsd : NSD.values()) {
+            compressors.add(new BitGroomingCompressor(nsd));
+        }
+        for (int i = 0; i < 53; i++) {
+            compressors.add(new BitShavingCompressor(i));
+        }
+        for (int i = 0; i < 53; i++) {
+            compressors.add(new DigitRoutingCompressor(i));
+        }
         return compressors;
     }
 }

@@ -11,12 +11,16 @@ public class LaunchCalculations {
     private static final Logger LOG = LogManager.getLogger(LaunchCalculations.class);
 
     public static void main(String[] args) throws DataFormatException, IOException {
+        LOG.info(() -> "The directory where the data for calculations are stored: " + args[0]);
+        LOG.info(() -> "Path for file with calculations is: " + args[1]);
+
         AlgorithmsResultCalculator calculator = new AlgorithmsResultCalculator();
         try {
-            calculator.makeCalculations("src\\main\\resources\\data");
+            calculator.makeCalculations(args[0], args[1]);
         } catch (IOException | DataFormatException | CalculationException e) {
             LOG.error(e::getCause);
         }
+
         LOG.info(() -> "Measurements completed");
     }
 }
