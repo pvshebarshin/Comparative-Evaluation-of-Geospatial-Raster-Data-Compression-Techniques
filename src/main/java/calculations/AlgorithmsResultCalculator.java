@@ -88,8 +88,8 @@ public final class AlgorithmsResultCalculator {
                 StandardOpenOption.APPEND);
     }
 
-    private List<String> listFilesForFolder(final String folder) {
-        try (Stream<Path> stream = Files.walk(Paths.get(folder), DEPTH_OF_READING_DATA_IN_DIRECTORY)) {
+    private List<String> listFilesForFolder(String storeDirectory) {
+        try (Stream<Path> stream = Files.walk(Paths.get(storeDirectory), DEPTH_OF_READING_DATA_IN_DIRECTORY)) {
             return stream
                     .filter(file -> !Files.isDirectory(file))
                     .map(Path::toAbsolutePath)
@@ -101,13 +101,7 @@ public final class AlgorithmsResultCalculator {
     }
 
     private Path getResultPath(String resultFilePath) {
-        File file;
-        if (resultFilePath == null || resultFilePath.isEmpty()) {
-            file = new File("src" + File.separator + "main"
-                    + File.separator + "resources" + File.separator + "calculations.csv");
-        } else {
-            file = new File(resultFilePath);
-        }
+        File file = new File(resultFilePath);
 
         try {
             if (file.createNewFile()) {
@@ -149,15 +143,15 @@ public final class AlgorithmsResultCalculator {
     private List<Compressor> initList() {
         List<Compressor> compressors = new ArrayList<>();
         compressors.add(new FpcCompressor());
-        for (NSD nsd : NSD.values()) {
-            compressors.add(new BitGroomingCompressor(nsd));
-        }
-        for (int i = 0; i < 53; i++) {
-            compressors.add(new BitShavingCompressor(i));
-        }
-        for (int i = 0; i < 53; i++) {
-            compressors.add(new DigitRoutingCompressor(i));
-        }
+//        for (NSD nsd : NSD.values()) {
+//            compressors.add(new BitGroomingCompressor(nsd));
+//        }
+//        for (int i = 0; i < 53; i++) {
+//            compressors.add(new BitShavingCompressor(i));
+//        }
+//        for (int i = 0; i < 53; i++) {
+//            compressors.add(new DigitRoutingCompressor(i));
+//        }
         return compressors;
     }
 }
