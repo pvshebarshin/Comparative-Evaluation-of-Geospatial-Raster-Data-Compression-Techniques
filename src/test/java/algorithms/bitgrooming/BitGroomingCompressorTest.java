@@ -44,7 +44,7 @@ public class BitGroomingCompressorTest {
     }
 
     @Test
-    public void test() throws DataFormatException, IOException {
+    public void bitGroomingCompressorTest() throws DataFormatException, IOException {
         Random random = new Random();
         BitGroomingCompressor bitGroomingCompressor = new BitGroomingCompressor(parameters.BGNsd);
         double[] data = new double[parameters.length];

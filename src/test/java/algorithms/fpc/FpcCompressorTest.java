@@ -36,7 +36,7 @@ public class FpcCompressorTest {
     }
 
     @Test
-    public void test() throws IOException, DataFormatException {
+    public void fpcCompressorTest() throws IOException, DataFormatException {
         FpcCompressor fpcCompressor = new FpcCompressor();
         byte[] compressedData = fpcCompressor.compress(parameters);
         double[] decompressedData = fpcCompressor.decompress(compressedData);

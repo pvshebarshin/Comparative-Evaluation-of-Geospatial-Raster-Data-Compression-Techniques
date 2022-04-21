@@ -55,7 +55,7 @@ public class FPCLosslessTest {
     }
 
     @Test
-    public void compressorTest() {
+    public void compressorLosslessTest() {
         FPC compressor = new FPC();
 
         byte[] buffer = new byte[wrapper.ArrayToCompress.length * 8 + wrapper.ArrayToCompress.length + 1];

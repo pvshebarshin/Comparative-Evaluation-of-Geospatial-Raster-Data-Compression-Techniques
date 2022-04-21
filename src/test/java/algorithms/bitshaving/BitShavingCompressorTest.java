@@ -101,7 +101,7 @@ public class BitShavingCompressorTest {
     }
 
     @Test
-    public void test() throws DataFormatException, IOException {
+    public void bitShavingCompressorTest() throws DataFormatException, IOException {
         Random random = new Random();
         BitShavingCompressor bitShavingCompressor = new BitShavingCompressor(parameters.bits);
         double[] data = new double[parameters.length];

@@ -56,6 +56,25 @@ public class ZCurve {
             12, 13, 12, 13, 14, 15, 14, 15, 12, 13, 12, 13, 14, 15, 14, 15
     };
 
+    private final int[] MORTON_TABLE_256_DECODE_Y = {
+            0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
+            0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
+            4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
+            4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
+            0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
+            0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
+            4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
+            4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
+            8, 8, 9, 9, 8, 8, 9, 9, 10, 10, 11, 11, 10, 10, 11, 11,
+            8, 8, 9, 9, 8, 8, 9, 9, 10, 10, 11, 11, 10, 10, 11, 11,
+            12, 12, 13, 13, 12, 12, 13, 13, 14, 14, 15, 15, 14, 14, 15, 15,
+            12, 12, 13, 13, 12, 12, 13, 13, 14, 14, 15, 15, 14, 14, 15, 15,
+            8, 8, 9, 9, 8, 8, 9, 9, 10, 10, 11, 11, 10, 10, 11, 11,
+            8, 8, 9, 9, 8, 8, 9, 9, 10, 10, 11, 11, 10, 10, 11, 11,
+            12, 12, 13, 13, 12, 12, 13, 13, 14, 14, 15, 15, 14, 14, 15, 15,
+            12, 12, 13, 13, 12, 12, 13, 13, 14, 14, 15, 15, 14, 14, 15, 15
+    };
+
     /**
      * Morton (z-ordering) encoding with Lookup Table method
      *
@@ -63,11 +82,11 @@ public class ZCurve {
      * @param y range is from 0 to 16777215.
      * @return	return Morton Code as long .
      */
-    public long encode(int x, int y) {
+    public int encode(int x, int y) {
         int bitMask = 0xff;
-        return ((long) MORTON_TABLE_256[(y >> 8) & bitMask] << 17
-                | (long) MORTON_TABLE_256[(x >> 8) & bitMask] << 16
-                | (long) MORTON_TABLE_256[y & bitMask] << 1
+        return (MORTON_TABLE_256[(y >> 8) & bitMask] << 17
+                | MORTON_TABLE_256[(x >> 8) & bitMask] << 16
+                | MORTON_TABLE_256[y & bitMask] << 1
                 | MORTON_TABLE_256[x & bitMask]);
     }
 
@@ -81,8 +100,8 @@ public class ZCurve {
         int[] result = new int[2];
         // Morton codes up to 48 bits
         if (index < Math.pow(2, 48)) {
-            result[0] = decodeHelper(index);
-            result[1] = decodeHelper(index);
+            result[0] = decodeHelper(index, MORTON_TABLE_256_DECODE_X);
+            result[1] = decodeHelper(index, MORTON_TABLE_256_DECODE_Y);
         }
         return result;
     }
@@ -94,12 +113,12 @@ public class ZCurve {
      *
      * @return decoded value
      */
-    private static int decodeHelper(long index) {
+    private static int decodeHelper(long index, int[] table) {
         long a = 0;
         long bitMask = 0x000000ff;
         long loops = (long) Math.floor(64.0f / 9.0f);
         for (long i = 0; i < loops; ++i) {
-            a |= ((long) MORTON_TABLE_256_DECODE_X[(int) ((index >> (i * 8)) & bitMask)] << (4 * i));
+            a |= ((long) table[(int) ((index >> (i * 8)) & bitMask)] << (4 * i));
         }
         return (int) a;
     }

@@ -80,7 +80,7 @@ public class DigitRoutingTest {
     }
 
     @Test
-    public void digitRouting() {
+    public void digitRoutingTest() {
         DigitRouting digitRouting = new DigitRouting();
         double[] result = digitRouting.encode(testParameter.inputData, testParameter.nsd);
         for (int i = 0; i < result.length; i++) {

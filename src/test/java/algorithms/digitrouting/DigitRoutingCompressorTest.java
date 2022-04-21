@@ -45,7 +45,7 @@ public class DigitRoutingCompressorTest {
     }
 
     @Test
-    public void test() throws DataFormatException, IOException {
+    public void digitRoutingCompressorTest() throws DataFormatException, IOException {
         Random random = new Random();
         DigitRoutingCompressor digitRoutingCompressor = new DigitRoutingCompressor(parameters.nsd);
         double[] data = new double[parameters.length];
