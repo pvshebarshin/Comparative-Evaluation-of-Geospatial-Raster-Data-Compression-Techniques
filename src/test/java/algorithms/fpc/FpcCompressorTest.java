@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
+import java.util.zip.DataFormatException;
 
 @RunWith(value = Parameterized.class)
 public class FpcCompressorTest {
@@ -34,7 +36,7 @@ public class FpcCompressorTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws IOException, DataFormatException {
         FpcCompressor fpcCompressor = new FpcCompressor();
         byte[] compressedData = fpcCompressor.compress(parameters);
         double[] decompressedData = fpcCompressor.decompress(compressedData);
