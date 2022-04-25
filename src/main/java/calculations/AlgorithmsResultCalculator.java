@@ -148,17 +148,17 @@ public final class AlgorithmsResultCalculator {
 
     private List<Compressor> initList() {
         List<Compressor> compressors = new ArrayList<>();
-//        compressors.add(new FpcCompressor());
-//        for (NSD nsd : NSD.values()) {
-//            compressors.add(new BitGroomingCompressor(nsd));
-//        }
-//        for (int i = 0; i < 53; i++) {
-//            compressors.add(new BitShavingCompressor(i));
-//        }
-//        for (int i = 0; i < 53; i++) {
-//            compressors.add(new DigitRoutingCompressor(i));
-//        }
-        compressors.add(new K2RasterCompressor());
+        compressors.add(new FpcCompressor());
+        for (NSD nsd : NSD.values()) {
+            compressors.add(new BitGroomingCompressor(nsd));
+        }
+        for (int i = 0; i < 53; i++) {
+            compressors.add(new BitShavingCompressor(i));
+        }
+        for (int i = 0; i < 53; i++) {
+            compressors.add(new DigitRoutingCompressor(i));
+        }
+//        compressors.add(new K2RasterCompressor());
         return compressors;
     }
 }
