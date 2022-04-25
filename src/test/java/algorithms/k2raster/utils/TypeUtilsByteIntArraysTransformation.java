@@ -7,48 +7,49 @@ import org.junit.runners.Parameterized;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 @RunWith(value = Parameterized.class)
-public class TypeUtilsTest {
+public class TypeUtilsByteIntArraysTransformation {
 
     private final TestParameter testParameter;
 
-    public TypeUtilsTest(TestParameter testParameter) {
+    public TypeUtilsByteIntArraysTransformation(TestParameter testParameter) {
         this.testParameter = testParameter;
     }
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<TestParameter> data() {
         ArrayList<TestParameter> parameters = new ArrayList<>();
+        Random random = new Random();
 
-        double[] data = new double[100];
+        int[] data = new int[100];
         for (int i = 0; i < data.length; i++) {
-            data[i] = ThreadLocalRandom.current().nextDouble(-1, 1);
+            data[i] = random.nextInt();
         }
         parameters.add(new TestParameter(data));
 
-        data = new double[10000];
+        data = new int[10000];
         for (int i = 0; i < data.length; i++) {
-            data[i] = ThreadLocalRandom.current().nextDouble(-1, 1);
+            data[i] = random.nextInt();
         }
         parameters.add(new TestParameter(data));
 
-        data = new double[10000000];
+        data = new int[10000000];
         for (int i = 0; i < data.length; i++) {
-            data[i] = ThreadLocalRandom.current().nextDouble(-1, 1);
+            data[i] = random.nextInt();
         }
         parameters.add(new TestParameter(data));
 
-        data = new double[45678];
+        data = new int[45678];
         for (int i = 0; i < data.length; i++) {
-            data[i] = ThreadLocalRandom.current().nextDouble(-1, 1);
+            data[i] = random.nextInt();
         }
         parameters.add(new TestParameter(data));
 
-        data = new double[777];
+        data = new int[777];
         for (int i = 0; i < data.length; i++) {
-            data[i] = ThreadLocalRandom.current().nextDouble(-1, 1);
+            data[i] = random.nextInt();
         }
         parameters.add(new TestParameter(data));
 
@@ -56,18 +57,18 @@ public class TypeUtilsTest {
     }
 
     @Test
-    public void typeUtilsTest() {
+    public void typeUtilsByteIntTransformation() {
         Assertions.assertArrayEquals(
-                TypeUtils.positiveLongToDouble(TypeUtils.doubleToPositiveLong(testParameter.data)),
+                TypeUtils.byteArrayToIntArray(TypeUtils.intArrayToByteArray(testParameter.data)),
                 testParameter.data
         );
     }
 
     private static class TestParameter {
         private static int i = 0;
-        private final double[] data;
+        private final int[] data;
 
-        public TestParameter(double[] data) {
+        public TestParameter(int[] data) {
             this.data = data;
         }
 

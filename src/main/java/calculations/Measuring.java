@@ -40,11 +40,6 @@ public class Measuring {
             return this;
         }
 
-        public Builder setName(double ratio) {
-            Measuring.this.ratio = ratio;
-            return this;
-        }
-
         public Builder setTime(long time) {
             Measuring.this.time = time;
             return this;

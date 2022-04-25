@@ -1,5 +1,6 @@
 package algorithms.k2raster.mapping3D2D;
 
+import algorithms.k2raster.utils.BitMatrix;
 import algorithms.k2raster.utils.TypeUtils;
 import org.geotools.util.UnsupportedImplementationException;
 
@@ -20,34 +21,70 @@ public class MatrixConverter {
         throw new UnsupportedImplementationException("");
     }
 
-    public boolean[][] encode(double[] rasterData) {
-        long[] codedMatrix = TypeUtils.doubleToPositiveLong(rasterData);
-        index = codedMatrix.length;
+    public BitMatrix encodeNDVI(double[] rasterData) {
+        int[] codedMatrix = TypeUtils.doubleToPositiveLong(rasterData);
+        index = rasterData.length;
         int n = 1;
-        while (n * 2 < rasterData.length * rasterData.length
-                && n * 2L < Arrays.stream(codedMatrix).max().orElse(Long.MAX_VALUE)) {
+        while (n < rasterData.length
+                || n <= Arrays.stream(codedMatrix).max().orElse(Integer.MAX_VALUE)) {
             n *= 2;
         }
-        boolean[][] result = new boolean[n][n];
+
+        BitMatrix result = new BitMatrix(n, n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 for (int m = 0; m < codedMatrix.length; m++) {
-                    result[i][j] = j == m && i == codedMatrix[m];
+                    if (j == m && i == rasterData[m] || result.get(i, j)) {
+                        result.set(i, j);
+                    }
                 }
             }
         }
         return result;
     }
 
-    public double[] decode(boolean[][] codedData) {
-        long[] codedMatrix = new long[index];
-        for (int i = 0; i < codedData.length; i++) {
-            for (int j = 0; j < codedData[0].length; j++) {
-                if (codedData[i][j]) {
+    public double[] decodeNDVI(BitMatrix codedData) {
+        int[] codedMatrix = new int[index];
+        for (int i = 0; i < codedData.getWidth(); i++) {
+            for (int j = 0; j < codedData.getWidth(); j++) {
+                if (codedData.get(i, j)) {
                     codedMatrix[j] = i;
                 }
             }
         }
         return TypeUtils.positiveLongToDouble(codedMatrix);
+    }
+
+    public int[] decode(BitMatrix codedData) {
+        int[] codedMatrix = new int[index];
+        for (int i = 0; i < codedData.getHeight(); i++) {
+            for (int j = 0; j < codedData.getWidth(); j++) {
+                if (codedData.get(i, j)) {
+                    codedMatrix[j] = i;
+                }
+            }
+        }
+
+        return codedMatrix;
+    }
+
+    public BitMatrix encode(final int[] rasterData) {
+        index = rasterData.length;
+        int n = 1;
+        while (n < rasterData.length
+                || n <= Arrays.stream(rasterData).max().orElse(Integer.MAX_VALUE)) {
+            n *= 2;
+        }
+        BitMatrix result = new BitMatrix(n, n);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int m = 0; m < rasterData.length; m++) {
+                    if (j == m && i == rasterData[m] || result.get(i, j)) {
+                        result.set(i, j);
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

@@ -60,32 +60,38 @@ public final class AlgorithmsResultCalculator {
         time = System.nanoTime() - time;
         Files.write(
                 path,
-                (Measuring.newBuilder()
-                        .setName(compressor.toString())
-                        .setRatio(DeflaterUtils.getRatio())
-                        .setTime(time)
-                        .setSize(data.length * 8L)
-                        .setParameters(compressor.getParameters())
-                        .setType("C")
-                        .build()
-                        .toString() + '\n').getBytes(),
-                StandardOpenOption.APPEND);
+                (
+                        Measuring.newBuilder()
+                                .setName(compressor.toString())
+                                .setRatio(DeflaterUtils.getRatio())
+                                .setTime(time)
+                                .setSize(data.length * 8L)
+                                .setParameters(compressor.getParameters())
+                                .setType("C")
+                                .build()
+                                .toString() + '\n'
+                ).getBytes(),
+                StandardOpenOption.APPEND
+        );
 
         time = System.nanoTime();
         compressor.decompress(compressedData);
         time = System.nanoTime() - time;
         Files.write(
                 path,
-                (Measuring.newBuilder()
-                        .setName(compressor.toString())
-                        .setRatio(DeflaterUtils.getRatio())
-                        .setTime(time)
-                        .setSize(data.length * 8L)
-                        .setParameters(compressor.getParameters())
-                        .setType("D")
-                        .build()
-                        .toString() + '\n').getBytes(),
-                StandardOpenOption.APPEND);
+                (
+                        Measuring.newBuilder()
+                                .setName(compressor.toString())
+                                .setRatio(DeflaterUtils.getRatio())
+                                .setTime(time)
+                                .setSize(data.length * 8L)
+                                .setParameters(compressor.getParameters())
+                                .setType("D")
+                                .build()
+                                .toString() + '\n'
+                ).getBytes(),
+                StandardOpenOption.APPEND
+        );
     }
 
     private List<String> listFilesForFolder(String storeDirectory) {
@@ -142,7 +148,7 @@ public final class AlgorithmsResultCalculator {
 
     private List<Compressor> initList() {
         List<Compressor> compressors = new ArrayList<>();
-        compressors.add(new FpcCompressor());
+//        compressors.add(new FpcCompressor());
 //        for (NSD nsd : NSD.values()) {
 //            compressors.add(new BitGroomingCompressor(nsd));
 //        }
@@ -152,6 +158,7 @@ public final class AlgorithmsResultCalculator {
 //        for (int i = 0; i < 53; i++) {
 //            compressors.add(new DigitRoutingCompressor(i));
 //        }
+        compressors.add(new K2RasterCompressor());
         return compressors;
     }
 }
