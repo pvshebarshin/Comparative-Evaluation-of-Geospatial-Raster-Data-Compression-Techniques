@@ -153,4 +153,12 @@ public class K2Node {
         }
         return result;
     }
+
+    public BitMatrix getMatrix() {
+        return matrix;
+    }
+
+    public K2Node[] getChildren() {
+        return children;
+    }
 }
