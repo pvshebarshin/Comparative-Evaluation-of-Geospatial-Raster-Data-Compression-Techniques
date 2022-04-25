@@ -55,7 +55,7 @@ public class DigitRouting {
         }
     }
 
-    public MantissaExponent frexp(double value) {
+    private MantissaExponent frexp(double value) {
         long bits = Double.doubleToLongBits(value);
 
         if (Double.isNaN(value) || value + value == value || Double.isInfinite(value)) {

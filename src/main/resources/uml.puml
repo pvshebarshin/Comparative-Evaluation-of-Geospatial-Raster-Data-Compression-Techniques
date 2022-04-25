@@ -7,6 +7,11 @@ abstract class Compressor
 BitShavingCompressor <|-- Compressor
 BitGroomingCompressor <|-- Compressor
 FpcCompressor <|-- Compressor
+DigitRoutingCompressor <|-- Compressor
+K2RasterCompressor <|-- Compressor
+
+K2Tree *-- K2Node
+DigitRouting -- MantissaExponent
 
 FPC *-- DfcmPredictor
 FPC *--FcmPredictor
@@ -14,12 +19,20 @@ FpcCompressor *-- FPC
 BitGrooming *-- NSD
 BitGroomingCompressor *-- BitGrooming
 BitShavingCompressor *-- BitShaving
+DigitRoutingCompressor *-- DigitRouting
+K2RasterCompressor *-- K2Tree
 
 abstract class Compressor {
-byte[] compress(double[] data)
-double[] decompress(byte[] data)
-String getParameters()
-String toString()
++ {abstract} byte[] compress(double[] data)
++ {abstract} double[] decompress(byte[] data)
++ {abstract} String getParameters()
++ {abstract} String toString()
+}
+
+class K2RasterCompressor {
+}
+
+class DigitRoutingCompressor {
 }
 
 class FpcCompressor {
@@ -34,44 +47,106 @@ class BitShavingCompressor {
 
 }
 
+class K2Node {
+- boolean min;
+- boolean max;
+- K2Node parent;
+- K2Node[] children;
+- BitMatrix matrix;
++ K2Node(boolean min, boolean max)
++ K2Node(boolean min, boolean max, K2Node parent, BitMatrix matrix)
++ K2Node(K2Node parent, BitMatrix matrix)
++ byte[] toBytes()
+}
+
+class K2Tree{
+- K2Node root
++ K2Node getRoot()
++ K2Tree(BitMatrix matrix)
++ BitMatrix toMatrix()
++ {static} byte[] serialize(K2Tree k2Tree)
++ {static} K2Tree deserialize(byte[] byteArray)
+- K2Tree(K2Node root)
+- BitMatrix toMatrix(K2Node node)
+- {static} void serialize(K2Node node, List<Byte> byteArray)
+- {static} K2Node deserialize(Deque<Byte> bytes)
+}
+
 class BitShaving{
-long bitMask
-long ALL_ONES_FOR_DOUBLE
-int FRACTIONAL
-long getBitMask(int bitN)
-BitShavingDouble(int bits)
-double bitShaveForDouble(double value, long bitMask)
-double[] encode(double[] data)
+- long bitMask
+- long ALL_ONES_FOR_DOUBLE
+- int FRACTIONAL_64_BIT
++ BitShavingDouble(int bits)
++ double[] encode(double[] data)
+- {static} long getBitMask(int bitN)
+- double bitShaveForDouble(double value, long bitMask)
 }
 
 class FPC {
-FcmPredictor predictor1
-DfcmPredictor predictor2
-int indexEncode
-int indexDecode
-compress(byte[] buffer, double[] data)
-decompress(byte[] buffer, double[] data)
+- {static} int LOG_OF_TABLE_SIZE
+- FcmPredictor predictor1
+- DfcmPredictor predictor2
+- int indexEncode
+- int indexDecode
++ byte[] compress(byte[] buffer, double[] data)
++ double[] decompress(byte[] buffer, double[] data)
++ long toLong(byte[] data)
++ byte[] toByteArray(long data)
+- void decode(byte[] buffer, double[] data, int i)
+- void encodeAndPad(byte[] buffer, double d)
+- int encodeZeroBytes(long diff1d)
+- void encode(byte[] buffer, double d, double e)
+- boolean updatePredictors(long bits, long diff1, long diff2)
+- void checkPrediction(byte[] buffer, long diff1, long diff2, boolean isPredictorBetter)
 }
 
-class BitGrooming{
-double[] encode(double[] data, NSD nsd)
+class BitGrooming {
+- {static} double M_LN10
+- {static} double M_LN2
+- {static} int BIT_XPL_NBR_SGN_DBL
+- {static} double BIT_PER_DCM_DGT_PRC
++ double[] encode(double[] data, NSD nsd)
 }
 
 enum NSD{
-NSD1
++ NSD1
 ...
-NSD15
++ NSD15
+- int value
++ NSD(int value)
++ int getValue()
 }
 
 class FcmPredictor{
-long[] table
-long getPrediction()
-update(long trueValue)
+- long[] table
+- int fcmHash
++ FcmPredictor(int logOfTableSize)
++ long getPrediction()
++ void update(long trueValue)
 }
 class DfcmPredictor{
-long[] table
-long getPrediction()
-update(long trueValue)
+- long[] table
+- int dfcm_hash
+- long lastValue
++ DfcmPredictor(int logOfTableSize)
++ long getPrediction()
++ void update(long trueValue)
+}
+
+class DigitRouting {
+- double LOG10_2
+- double LOG2_10
+- double[][] TABLE
++ double[] encode(double[] data, int nsd)
+- MantissaExponent frexp(double value)
+}
+
+class MantissaExponent {
+- int exponent
+- double mantissa
++ MantissaExponent(int exponent, double mantissa)
++ int getExponent()
++ double getMantissa()
 }
 
 

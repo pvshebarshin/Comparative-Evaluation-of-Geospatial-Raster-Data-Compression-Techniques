@@ -131,46 +131,6 @@ public class K2Node {
         return bytes;
     }
 
-    public boolean getMin() {
-        return min;
-    }
-
-    public void setMin(boolean min) {
-        this.min = min;
-    }
-
-    public boolean getMax() {
-        return max;
-    }
-
-    public void setMax(boolean max) {
-        this.max = max;
-    }
-
-    public K2Node getParent() {
-        return parent;
-    }
-
-    public void setParent(K2Node parent) {
-        this.parent = parent;
-    }
-
-    public K2Node[] getChildren() {
-        return children;
-    }
-
-    public void setChildren(K2Node[] children) {
-        this.children = children;
-    }
-
-    public BitMatrix getMatrix() {
-        return matrix;
-    }
-
-    public void setMatrix(BitMatrix matrix) {
-        this.matrix = matrix;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
