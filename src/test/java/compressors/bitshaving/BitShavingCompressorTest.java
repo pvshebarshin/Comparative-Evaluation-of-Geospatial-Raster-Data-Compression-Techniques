@@ -1,5 +1,6 @@
-package algorithms.bitshaving;
+package compressors.bitshaving;
 
+import algorithms.bitshaving.BitShavingDouble;
 import compressors.BitShavingCompressor;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;

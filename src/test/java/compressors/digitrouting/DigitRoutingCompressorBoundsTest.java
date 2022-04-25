@@ -1,4 +1,4 @@
-package algorithms.digitrouting;
+package compressors.digitrouting;
 
 import compressors.DigitRoutingCompressor;
 import org.junit.Test;

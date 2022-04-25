@@ -1,4 +1,4 @@
-package algorithms.digitrouting;
+package compressors.digitrouting;
 
 import algorithms.digitrounding.DigitRouting;
 import compressors.DigitRoutingCompressor;

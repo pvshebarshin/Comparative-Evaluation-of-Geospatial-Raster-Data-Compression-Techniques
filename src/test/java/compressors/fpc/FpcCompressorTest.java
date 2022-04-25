@@ -1,4 +1,4 @@
-package algorithms.fpc;
+package compressors.fpc;
 
 import compressors.FpcCompressor;
 import org.junit.Test;

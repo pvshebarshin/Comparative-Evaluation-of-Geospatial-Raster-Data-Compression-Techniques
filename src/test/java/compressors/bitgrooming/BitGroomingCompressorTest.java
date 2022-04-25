@@ -1,5 +1,7 @@
-package algorithms.bitgrooming;
+package compressors.bitgrooming;
 
+import algorithms.bitgrooming.BitGrooming;
+import algorithms.bitgrooming.NSD;
 import compressors.BitGroomingCompressor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
