@@ -1,16 +1,63 @@
-package algorithms.k2raster.utils;
+package algorithms.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 
 public final class TypeUtils {
 
-    private static long offset = 0;
-
     private TypeUtils() {
     }
+
+    public static byte[] doubleToByteArray(double dblValue) {
+        long data = Double.doubleToRawLongBits(dblValue);
+        return new byte[]{
+                (byte) ((data >> 56) & 0xff),
+                (byte) ((data >> 48) & 0xff),
+                (byte) ((data >> 40) & 0xff),
+                (byte) ((data >> 32) & 0xff),
+                (byte) ((data >> 24) & 0xff),
+                (byte) ((data >> 16) & 0xff),
+                (byte) ((data >> 8) & 0xff),
+                (byte) ((data) & 0xff),
+        };
+    }
+
+    public static long byteArrayToLong(byte[] data) {
+        long result = 0L;
+        for (int i = data.length; i > 0; i--) {
+            result <<= 8;
+            result |= data[i - 1] & 0xff;
+        }
+        return result;
+    }
+
+    public static byte[] longToByteArray(long data) {
+        int encodedZeroBytes = encodeZeroBytes(data);
+        if (encodedZeroBytes > 3) {
+            encodedZeroBytes++;
+        }
+        byte[] array = new byte[8 - encodedZeroBytes];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (byte) (data & 0xff);
+            data >>= 8;
+        }
+        return array;
+    }
+
+    public static int encodeZeroBytes(long diff) {
+        int leadingZeroBytes = Long.numberOfLeadingZeros(diff) / 8;
+        if (leadingZeroBytes >= 4) {
+            leadingZeroBytes--;
+        }
+        return leadingZeroBytes;
+    }
+
+    public static double byteArrayToDouble(byte[] array) {
+        return ByteBuffer.wrap(array).getDouble();
+    }
+
+
 
     public static byte[] intArrayToByteArray(int[] array) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(array.length * 4);

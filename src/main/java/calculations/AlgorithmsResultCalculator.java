@@ -148,7 +148,15 @@ public final class AlgorithmsResultCalculator {
 
     private List<Compressor> initList() {
         List<Compressor> compressors = new ArrayList<>();
-        compressors.add(new FpcCompressor());
+        compressors.add(new FPCCompressor());
+
+        compressors.add(new SZCompressor(0.0));
+        compressors.add(new SZCompressor(0.01));
+        compressors.add(new SZCompressor(0.05));
+        compressors.add(new SZCompressor(0.1));
+        compressors.add(new SZCompressor(0.2));
+        compressors.add(new SZCompressor(0.3));
+
         for (NSD nsd : NSD.values()) {
             compressors.add(new BitGroomingCompressor(nsd));
         }

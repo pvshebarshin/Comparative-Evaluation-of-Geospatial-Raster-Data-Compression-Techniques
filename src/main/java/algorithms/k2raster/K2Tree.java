@@ -1,7 +1,7 @@
 package algorithms.k2raster;
 
-import algorithms.k2raster.utils.BitMatrix;
-import algorithms.k2raster.utils.TypeUtils;
+import algorithms.utils.BitMatrix;
+import algorithms.utils.TypeUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayDeque;

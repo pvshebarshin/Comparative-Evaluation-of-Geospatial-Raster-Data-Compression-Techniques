@@ -1,4 +1,4 @@
-package algorithms.k2raster.mapping3D2D;
+package algorithms.utils.mapping3D2D;
 
 public class ZCurve {
 

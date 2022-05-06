@@ -1,6 +1,7 @@
-package compressors.fpc;
+package compressors.sz;
 
 import compressors.FPCCompressor;
+import compressors.SZCompressor;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -10,13 +11,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.zip.DataFormatException;
 
 @RunWith(value = Parameterized.class)
-public class FpcCompressorTest {
+public class SZCompressorTest {
+
     private final double[] parameters;
 
-    public FpcCompressorTest(double[] parameters) {
+    public SZCompressorTest(double[] parameters) {
         this.parameters = parameters;
     }
 
@@ -24,11 +27,10 @@ public class FpcCompressorTest {
     public static Collection<double[]> data() {
         ArrayList<double[]> parameters = new ArrayList<>();
         Random random = new Random();
-        parameters.add(new double[]{3.14159265358979323846264338327950288});
         for (int i = 1; i < 10; i++) {
             double[] mass = new double[i * 10];
             for (int j = 0; j < mass.length; j++) {
-                mass[j] = random.nextInt() + random.nextDouble();
+                mass[j] = ThreadLocalRandom.current().nextDouble(9999, 100000);
             }
             parameters.add(mass);
         }
@@ -36,10 +38,10 @@ public class FpcCompressorTest {
     }
 
     @Test
-    public void fpcCompressorTest() throws IOException, DataFormatException {
-        FPCCompressor fpcCompressor = new FPCCompressor();
-        byte[] compressedData = fpcCompressor.compress(parameters);
-        double[] decompressedData = fpcCompressor.decompress(compressedData);
-        Assertions.assertArrayEquals(parameters, decompressedData);
+    public void szCompressorTest() throws IOException, DataFormatException {
+        SZCompressor szCompressor = new SZCompressor(0.1);
+        byte[] compressedData = szCompressor.compress(parameters);
+        double[] decompressedData = szCompressor.decompress(compressedData);
+        Assertions.assertArrayEquals(parameters, decompressedData, 0.6);
     }
 }

@@ -3,6 +3,10 @@ package algorithms.fpc;
 import algorithms.fpc.predictors.DfcmPredictor;
 import algorithms.fpc.predictors.FcmPredictor;
 
+import static algorithms.utils.TypeUtils.encodeZeroBytes;
+import static algorithms.utils.TypeUtils.longToByteArray;
+import static algorithms.utils.TypeUtils.byteArrayToLong;
+
 public class FPC {
 
     private static final int LOG_OF_TABLE_SIZE = 16;
@@ -13,18 +17,15 @@ public class FPC {
     private int indexEncode = 0;
     private int indexDecode = 0;
 
-    public byte[] compress(byte[] buffer, double[] data) {
-        for (int i = 0; i < data.length; i += 2) {
-            if (i == data.length - 1) {
-                encodeAndPad(buffer, data[i]);
-            } else {
-                encode(buffer, data[i], data[i + 1]);
-            }
+    public byte[] encode(byte[] buffer, double[] data) {
+        for (int i = 0; i < data.length - 1; i += 2) {
+            encode(buffer, data[i], data[i + 1]);
         }
+        encodeAndPad(buffer, data[data.length - 1]);
         return buffer;
     }
 
-    public double[] decompress(byte[] buffer, double[] data) {
+    public double[] decode(byte[] buffer, double[] data) {
         for (int i = 0; i < data.length; i += 2) {
             decode(buffer, data, i);
         }
@@ -52,7 +53,7 @@ public class FPC {
             dst[j] = buffer[indexDecode];
             indexDecode++;
         }
-        long diff = toLong(dst);
+        long diff = byteArrayToLong(dst);
         long actual = prediction ^ diff;
 
         predictor1.update(actual);
@@ -75,7 +76,7 @@ public class FPC {
             dst[j] = buffer[indexDecode];
             indexDecode++;
         }
-        diff = toLong(dst);
+        diff = byteArrayToLong(dst);
 
         if (numZeroBytes == 7 && diff == 0) {
             return;
@@ -87,15 +88,6 @@ public class FPC {
         predictor2.update(actual);
 
         data[i + 1] = Double.longBitsToDouble(actual);
-    }
-
-    public long toLong(byte[] data) {
-        long result = 0L;
-        for (int i = data.length; i > 0; i--) {
-            result <<= 8;
-            result |= data[i - 1] & 0xff;
-        }
-        return result;
     }
 
     private void encodeAndPad(byte[] buffer, double d) {
@@ -122,13 +114,6 @@ public class FPC {
 
         buffer[indexEncode] = (byte) 0;
         indexEncode++;
-    }
-
-    private int encodeZeroBytes(long diff1d) {
-        int leadingZeroBytes = Long.numberOfLeadingZeros(diff1d) / 8;
-        if (leadingZeroBytes >= 4)
-            leadingZeroBytes--;
-        return leadingZeroBytes;
     }
 
     private void encode(byte[] buffer, double d, double e) {
@@ -178,29 +163,17 @@ public class FPC {
 
     private void checkPrediction(byte[] buffer, long diff1, long diff2, boolean isPredictorBetter) {
         if (isPredictorBetter) {
-            byte[] temp = toByteArray(diff1);
+            byte[] temp = longToByteArray(diff1);
             for (byte b : temp) {
                 buffer[indexEncode] = b;
                 indexEncode++;
             }
         } else {
-            byte[] temp = toByteArray(diff2);
+            byte[] temp = longToByteArray(diff2);
             for (byte b : temp) {
                 buffer[indexEncode] = b;
                 indexEncode++;
             }
         }
-    }
-
-    public byte[] toByteArray(long data) {
-        int encodedZeroBytes = encodeZeroBytes(data);
-        if (encodedZeroBytes > 3)
-            encodedZeroBytes++;
-        byte[] array = new byte[8 - encodedZeroBytes];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = (byte) (data & 0xff);
-            data >>= 8;
-        }
-        return array;
     }
 }

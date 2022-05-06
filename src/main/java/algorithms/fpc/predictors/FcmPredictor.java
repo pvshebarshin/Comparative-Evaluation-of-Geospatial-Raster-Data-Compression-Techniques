@@ -3,6 +3,7 @@ package algorithms.fpc.predictors;
 import java.util.Arrays;
 
 public class FcmPredictor {
+
     private final long[] table;
     private int fcmHash;
 

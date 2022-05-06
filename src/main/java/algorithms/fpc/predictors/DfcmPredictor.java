@@ -3,6 +3,7 @@ package algorithms.fpc.predictors;
 import java.util.Arrays;
 
 public class DfcmPredictor {
+
     private final long[] table;
     private int dfcm_hash;
     private long lastValue;
@@ -20,8 +21,7 @@ public class DfcmPredictor {
 
     public void update(long trueValue) {
         table[dfcm_hash] = trueValue - lastValue;
-        dfcm_hash = (int) (((dfcm_hash << 2) ^ ((trueValue - lastValue) >> 40)) &
-                (table.length - 1));
+        dfcm_hash = (int) (((dfcm_hash << 2) ^ ((trueValue - lastValue) >> 40)) & (table.length - 1));
         lastValue = trueValue;
     }
 }

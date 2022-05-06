@@ -1,6 +1,6 @@
 package algorithms.k2raster;
 
-import algorithms.k2raster.utils.BitMatrix;
+import algorithms.utils.BitMatrix;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 

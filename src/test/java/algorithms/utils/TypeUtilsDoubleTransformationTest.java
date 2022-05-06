@@ -1,4 +1,4 @@
-package algorithms.k2raster.utils;
+package algorithms.utils;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;

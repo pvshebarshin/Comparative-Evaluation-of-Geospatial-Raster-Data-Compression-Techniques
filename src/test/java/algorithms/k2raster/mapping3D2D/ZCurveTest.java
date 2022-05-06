@@ -1,5 +1,6 @@
 package algorithms.k2raster.mapping3D2D;
 
+import algorithms.utils.mapping3D2D.ZCurve;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 

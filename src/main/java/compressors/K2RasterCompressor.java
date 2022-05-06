@@ -1,8 +1,7 @@
 package compressors;
 
 import algorithms.k2raster.K2Tree;
-import algorithms.k2raster.mapping3D2D.MatrixConverter;
-import algorithms.k2raster.utils.TypeUtils;
+import algorithms.utils.mapping3D2D.MatrixConverter;
 import compressors.utils.DeflaterUtils;
 
 import java.io.IOException;

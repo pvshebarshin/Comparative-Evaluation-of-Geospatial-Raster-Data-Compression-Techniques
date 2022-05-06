@@ -1,4 +1,4 @@
-package algorithms.k2raster.utils;
+package algorithms.utils;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import java.util.Random;
 
 public class TypeUtilsByteIntTransformation {
+
     @Test
     public void typeUtilsByteIntTransformation() {
         Random random = new Random();
@@ -13,7 +14,7 @@ public class TypeUtilsByteIntTransformation {
         for (int i = 0; i < 300; i++) {
             value = random.nextInt();
             result = TypeUtils.byteArrayToInt(TypeUtils.intToByteArray(value));
-            Assertions.assertEquals(value, result);
+            Assertions.assertEquals(value, result, "Incorrect working of int/byte convert");
         }
     }
 }

@@ -1,7 +1,7 @@
-package algorithms.k2raster.mapping3D2D;
+package algorithms.utils.mapping3D2D;
 
-import algorithms.k2raster.utils.BitMatrix;
-import algorithms.k2raster.utils.TypeUtils;
+import algorithms.utils.BitMatrix;
+import algorithms.utils.TypeUtils;
 import org.geotools.util.UnsupportedImplementationException;
 
 import java.util.Arrays;

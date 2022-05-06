@@ -1,4 +1,4 @@
-package algorithms.k2raster.utils;
+package algorithms.utils;
 
 import com.google.zxing.common.BitArray;
 
