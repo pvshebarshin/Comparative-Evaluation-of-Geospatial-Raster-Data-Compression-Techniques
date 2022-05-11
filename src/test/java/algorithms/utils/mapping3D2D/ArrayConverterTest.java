@@ -1,6 +1,5 @@
-package algorithms.k2raster.mapping3D2D;
+package algorithms.utils.mapping3D2D;
 
-import algorithms.utils.mapping3D2D.MatrixConverter;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -11,11 +10,11 @@ import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RunWith(value = Parameterized.class)
-public class MatrixConverterTest {
+public class ArrayConverterTest {
 
     private final TestParameter testParameter;
 
-    public MatrixConverterTest(TestParameter testParameter) {
+    public ArrayConverterTest(TestParameter testParameter) {
         this.testParameter = testParameter;
     }
 
@@ -77,7 +76,10 @@ public class MatrixConverterTest {
     @Test
     public void matrixConverterTest() {
         MatrixConverter matrixConverter = new MatrixConverter();
-        int[] res = matrixConverter.decode(matrixConverter.encode(testParameter.data), testParameter.data.length);
+        int[] res = matrixConverter.decodeArray(
+                matrixConverter.encodeArray(testParameter.data),
+                testParameter.data.length
+        );
         Assertions.assertArrayEquals(
                 res,
                 testParameter.data
@@ -85,6 +87,7 @@ public class MatrixConverterTest {
     }
 
     private static class TestParameter {
+
         private static int i = 0;
         private final int[] data;
 

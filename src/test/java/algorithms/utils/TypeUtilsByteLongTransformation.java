@@ -3,7 +3,7 @@ package algorithms.utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class TypeUtilsByteLongTransformation {
+public class TypeUtilsByteLongTransformation {
 
     @Test
     void toLong() {

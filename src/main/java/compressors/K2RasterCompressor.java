@@ -12,7 +12,7 @@ public class K2RasterCompressor extends KRasterCompressor implements IntCompress
     @Override
     public byte[] compress(int[] data) throws IOException {
         MatrixConverter matrixConverter = new MatrixConverter();
-        K2Tree k2Tree = new K2Tree(matrixConverter.encode(data), data.length);
+        K2Tree k2Tree = new K2Tree(matrixConverter.encodeArray(data), data.length);
         return DeflaterUtils.compressByteArray(
                 K2Tree.serialize(k2Tree)
         );
@@ -24,7 +24,7 @@ public class K2RasterCompressor extends KRasterCompressor implements IntCompress
         K2Tree k2Tree = K2Tree.deserialize(
                 DeflaterUtils.decompressByteArray(data)
         );
-        return matrixConverter.decode(k2Tree.toMatrix(), k2Tree.getZMassSize());
+        return matrixConverter.decodeArray(k2Tree.toMatrix(), k2Tree.getZMassSize());
     }
 
     @Override
