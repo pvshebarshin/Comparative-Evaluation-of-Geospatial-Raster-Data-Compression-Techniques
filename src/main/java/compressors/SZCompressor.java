@@ -6,7 +6,7 @@ import compressors.utils.DeflaterUtils;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-public class SZCompressor implements Compressor {
+public class SZCompressor implements DoubleCompressor {
 
     private final SZ sz;
 

@@ -6,7 +6,7 @@ import compressors.utils.DeflaterUtils;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-public class DigitRoutingCompressor implements Compressor {
+public class DigitRoutingCompressor implements DoubleCompressor {
 
     private final int significantBits;
 

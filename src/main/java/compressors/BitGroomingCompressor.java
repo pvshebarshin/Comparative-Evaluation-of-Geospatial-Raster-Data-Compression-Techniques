@@ -7,7 +7,7 @@ import compressors.utils.DeflaterUtils;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-public class BitGroomingCompressor implements Compressor {
+public class BitGroomingCompressor implements DoubleCompressor {
 
     private NSD nsd;
 

@@ -7,26 +7,24 @@ import compressors.utils.DeflaterUtils;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-public class K2RasterCompressor implements Compressor {
-
-    private String parameter = "-";
+public class K2RasterCompressor extends KRasterCompressor implements IntCompressor {
 
     @Override
-    public byte[] compress(double[] data) throws IOException {
+    public byte[] compress(int[] data) throws IOException {
         MatrixConverter matrixConverter = new MatrixConverter();
-        K2Tree k2Tree = new K2Tree(matrixConverter.encodeNDVI(data));
+        K2Tree k2Tree = new K2Tree(matrixConverter.encode(data), data.length);
         return DeflaterUtils.compressByteArray(
                 K2Tree.serialize(k2Tree)
         );
     }
 
     @Override
-    public double[] decompress(byte[] data) throws DataFormatException, IOException {
+    public int[] decompress(byte[] data) throws DataFormatException, IOException {
         MatrixConverter matrixConverter = new MatrixConverter();
         K2Tree k2Tree = K2Tree.deserialize(
                 DeflaterUtils.decompressByteArray(data)
         );
-        return matrixConverter.decodeNDVI(k2Tree.toMatrix());
+        return matrixConverter.decode(k2Tree.toMatrix(), k2Tree.getZMassSize());
     }
 
     @Override
@@ -36,10 +34,6 @@ public class K2RasterCompressor implements Compressor {
 
     @Override
     public String getParameters() {
-        return parameter;
-    }
-
-    public void setParameter(String parameter) {
-        this.parameter = parameter;
+        return "-";
     }
 }

@@ -77,7 +77,7 @@ public class MatrixConverterTest {
     @Test
     public void matrixConverterTest() {
         MatrixConverter matrixConverter = new MatrixConverter();
-        int[] res = matrixConverter.decode(matrixConverter.encode(testParameter.data));
+        int[] res = matrixConverter.decode(matrixConverter.encode(testParameter.data), testParameter.data.length);
         Assertions.assertArrayEquals(
                 res,
                 testParameter.data

@@ -6,7 +6,7 @@ import compressors.utils.DeflaterUtils;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-public class FPCCompressor implements Compressor {
+public class FPCCompressor implements DoubleCompressor {
     private static int massLength;
 
     private static void setMassLength(int value) {

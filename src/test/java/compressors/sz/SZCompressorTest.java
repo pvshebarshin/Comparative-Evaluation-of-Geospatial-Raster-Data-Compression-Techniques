@@ -1,6 +1,5 @@
 package compressors.sz;
 
-import compressors.FPCCompressor;
 import compressors.SZCompressor;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;

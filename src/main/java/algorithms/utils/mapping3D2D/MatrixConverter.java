@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class MatrixConverter {
 
-    private int index = 0;
+    private static int index = 0;
     private final ZCurve zCurveCoder = new ZCurve();
 
     public boolean[][] encode(double[][] rasterData) {
@@ -21,42 +21,8 @@ public class MatrixConverter {
         throw new UnsupportedImplementationException("");
     }
 
-    public BitMatrix encodeNDVI(double[] rasterData) {
-        int[] codedMatrix = TypeUtils.doubleToPositiveLong(rasterData);
-        index = rasterData.length;
-        int n = 1;
-        while (n < rasterData.length
-                || n <= Arrays.stream(codedMatrix).max().orElse(Integer.MAX_VALUE)) {
-            n *= 2;
-        }
-
-        BitMatrix result = new BitMatrix(n, n);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int m = 0; m < codedMatrix.length; m++) {
-                    if (j == m && i == rasterData[m] || result.get(i, j)) {
-                        result.set(i, j);
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    public double[] decodeNDVI(BitMatrix codedData) {
-        int[] codedMatrix = new int[index];
-        for (int i = 0; i < codedData.getWidth(); i++) {
-            for (int j = 0; j < codedData.getWidth(); j++) {
-                if (codedData.get(i, j)) {
-                    codedMatrix[j] = i;
-                }
-            }
-        }
-        return TypeUtils.positiveLongToDouble(codedMatrix);
-    }
-
-    public int[] decode(BitMatrix codedData) {
-        int[] codedMatrix = new int[index];
+    public int[] decode(BitMatrix codedData, int size) {
+        int[] codedMatrix = new int[size];
         for (int i = 0; i < codedData.getHeight(); i++) {
             for (int j = 0; j < codedData.getWidth(); j++) {
                 if (codedData.get(i, j)) {
@@ -69,7 +35,6 @@ public class MatrixConverter {
     }
 
     public BitMatrix encode(final int[] rasterData) {
-        index = rasterData.length;
         int n = 1;
         while (n < rasterData.length
                 || n <= Arrays.stream(rasterData).max().orElse(Integer.MAX_VALUE)) {
@@ -77,11 +42,9 @@ public class MatrixConverter {
         }
         BitMatrix result = new BitMatrix(n, n);
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int m = 0; m < rasterData.length; m++) {
-                    if (j == m && i == rasterData[m] || result.get(i, j)) {
-                        result.set(i, j);
-                    }
+            for (int j = 0; j < rasterData.length; j++) {
+                if (i == rasterData[j]) {
+                    result.set(i, j);
                 }
             }
         }

@@ -6,7 +6,7 @@ import compressors.utils.DeflaterUtils;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-public class BitShavingCompressor implements Compressor {
+public class BitShavingCompressor implements DoubleCompressor {
 
     private final int bits;
 

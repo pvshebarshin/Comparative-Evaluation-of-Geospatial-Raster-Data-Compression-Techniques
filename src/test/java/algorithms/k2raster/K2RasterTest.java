@@ -15,7 +15,7 @@ public class K2RasterTest {
                 {false, true}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        Assertions.assertDoesNotThrow(() -> new K2Tree(bitMatrix));
+        Assertions.assertDoesNotThrow(() -> new K2Tree(bitMatrix, 2));
     }
 
     @Test
@@ -27,7 +27,7 @@ public class K2RasterTest {
                 {false, true, false, false}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        Assertions.assertDoesNotThrow(() -> new K2Tree(bitMatrix));
+        Assertions.assertDoesNotThrow(() -> new K2Tree(bitMatrix, 4));
     }
 
     @Test
@@ -37,7 +37,7 @@ public class K2RasterTest {
                 {false, true}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 2);
         K2Tree serializationResult = K2Tree.deserialize(K2Tree.serialize(k2Tree));
         Assertions.assertEquals(k2Tree, serializationResult);
     }
@@ -51,7 +51,7 @@ public class K2RasterTest {
                 {false, false, false, false}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 0);
         K2Tree serializationResult = K2Tree.deserialize(K2Tree.serialize(k2Tree));
         Assertions.assertEquals(k2Tree, serializationResult);
     }
@@ -65,7 +65,7 @@ public class K2RasterTest {
                 {false, true, false, false}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 4);
         K2Tree serializationResult = K2Tree.deserialize(K2Tree.serialize(k2Tree));
         Assertions.assertEquals(k2Tree, serializationResult);
     }
@@ -83,7 +83,7 @@ public class K2RasterTest {
                 {false, false, false, false, false, false, false, false}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 19);
         K2Tree serializationResult = K2Tree.deserialize(K2Tree.serialize(k2Tree));
         Assertions.assertEquals(k2Tree, serializationResult);
     }
@@ -98,7 +98,7 @@ public class K2RasterTest {
             }
         }
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 1024);
         K2Tree serializationResult = K2Tree.deserialize(K2Tree.serialize(k2Tree));
         Assertions.assertEquals(k2Tree, serializationResult);
     }
@@ -110,7 +110,7 @@ public class K2RasterTest {
                 {false, true}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 2);
         BitMatrix result = k2Tree.toMatrix();
         Assertions.assertEquals(bitMatrix, result);
     }
@@ -124,7 +124,7 @@ public class K2RasterTest {
                 {false, false, false, false}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 0);
         BitMatrix result = k2Tree.toMatrix();
         Assertions.assertEquals(bitMatrix, result);
     }
@@ -138,7 +138,7 @@ public class K2RasterTest {
                 {false, true, false, false}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 4);
         BitMatrix result = k2Tree.toMatrix();
         Assertions.assertEquals(bitMatrix, result);
     }
@@ -156,7 +156,7 @@ public class K2RasterTest {
                 {false, false, false, false, false, false, false, false}
         };
         BitMatrix bitMatrix = BitMatrix.parse(mass);
-        K2Tree k2Tree = new K2Tree(bitMatrix);
+        K2Tree k2Tree = new K2Tree(bitMatrix, 19);
         BitMatrix result = k2Tree.toMatrix();
         Assertions.assertEquals(bitMatrix, result);
     }
