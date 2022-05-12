@@ -56,7 +56,7 @@ public class ZCurve {
             12, 13, 12, 13, 14, 15, 14, 15, 12, 13, 12, 13, 14, 15, 14, 15
     };
 
-    private final int[] MORTON_TABLE_256_DECODE_Y = {
+    private static final int[] MORTON_TABLE_256_DECODE_Y = {
             0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
             0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
             4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,

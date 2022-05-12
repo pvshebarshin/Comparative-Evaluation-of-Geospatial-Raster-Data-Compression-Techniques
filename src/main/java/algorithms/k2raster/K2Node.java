@@ -51,10 +51,11 @@ public class K2Node {
 
     private void makeChildren(BitMatrix matrix, int size) {
         children = new K2Node[4];
-
+        int i;
+        int j;
         BitMatrix childMatrix = new BitMatrix(size / 2, size / 2);
-        for (int i = 0; i < size / 2; i++) {
-            for (int j = 0; j < size / 2; j++) {
+        for (i = 0; i < size / 2; i++) {
+            for (j = 0; j < size / 2; j++) {
                 if (matrix.get(i, j)) {
                     childMatrix.set(i, j);
                 }
@@ -63,8 +64,8 @@ public class K2Node {
         children[0] = new K2Node(this, childMatrix);
 
         childMatrix = new BitMatrix(size / 2, size / 2);
-        for (int i = 0; i < size / 2; i++) {
-            for (int j = size / 2; j < size; j++) {
+        for (i = 0; i < size / 2; i++) {
+            for (j = size / 2; j < size; j++) {
                 if (matrix.get(i, j)) {
                     childMatrix.set(i, j - size / 2);
                 }
@@ -73,8 +74,8 @@ public class K2Node {
         children[1] = new K2Node(this, childMatrix);
 
         childMatrix = new BitMatrix(size / 2, size / 2);
-        for (int i = size / 2; i < size; i++) {
-            for (int j = 0; j < size / 2; j++) {
+        for (i = size / 2; i < size; i++) {
+            for (j = 0; j < size / 2; j++) {
                 if (matrix.get(i, j)) {
                     childMatrix.set(i - size / 2, j);
                 }
@@ -83,8 +84,8 @@ public class K2Node {
         children[2] = new K2Node(this, childMatrix);
 
         childMatrix = new BitMatrix(size / 2, size / 2);
-        for (int i = size / 2; i < size; i++) {
-            for (int j = size / 2; j < size; j++) {
+        for (i = size / 2; i < size; i++) {
+            for (j = size / 2; j < size; j++) {
                 if (matrix.get(i, j)) {
                     childMatrix.set(i - size / 2, j - size / 2);
                 }
@@ -96,6 +97,7 @@ public class K2Node {
     public byte[] toBytes() {
         byte[] sizeOfMatrixInByteArray;
         byte[] bytes;
+        int i;
         if (matrix != null) {
             byte[] matrixByteArray = TypeUtils.intArrayToByteArray(matrix.getData());
             sizeOfMatrixInByteArray = TypeUtils.intToByteArray(matrix.getData().length * 4);
@@ -105,22 +107,22 @@ public class K2Node {
             bytes = new byte[matrixByteArray.length + 2
                     + sizeOfMatrixInByteArray.length + sizeMatrixSide.length];
 
-            for (int i = 0; i < sizeOfMatrixInByteArray.length; i++) {
+            for (i = 0; i < sizeOfMatrixInByteArray.length; i++) {
                 bytes[i] = sizeOfMatrixInByteArray[i];
             }
 
-            for (int i = 0; i < sizeMatrixSide.length; i++) {
+            for (i = 0; i < sizeMatrixSide.length; i++) {
                 bytes[i + sizeOfMatrixInByteArray.length] = sizeMatrixSide[i];
             }
 
-            for (int i = 0; i < matrixByteArray.length; i++) {
+            for (i = 0; i < matrixByteArray.length; i++) {
                 bytes[i + sizeOfMatrixInByteArray.length + sizeMatrixSide.length] = matrixByteArray[i];
             }
         } else {
             sizeOfMatrixInByteArray = TypeUtils.intToByteArray(0);
             bytes = new byte[2 + sizeOfMatrixInByteArray.length];
 
-            for (int i = 0; i < sizeOfMatrixInByteArray.length; i++) {
+            for (i = 0; i < sizeOfMatrixInByteArray.length; i++) {
                 bytes[i] = sizeOfMatrixInByteArray[i];
             }
         }
@@ -129,6 +131,14 @@ public class K2Node {
         bytes[bytes.length - 1] = (byte) (max ? 1 : 0);
 
         return bytes;
+    }
+
+    public int getByteSize() {
+        if (matrix != null) {
+            return matrix.getData().length * 4 + 10;
+        } else {
+            return 6;
+        }
     }
 
     @Override
