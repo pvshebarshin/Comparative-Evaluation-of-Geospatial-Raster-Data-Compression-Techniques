@@ -1,6 +1,7 @@
 package compressors;
 
 import algorithms.fpc.FPC;
+import compressors.interfaces.DoubleCompressor;
 import compressors.utils.DeflaterUtils;
 
 import java.io.IOException;

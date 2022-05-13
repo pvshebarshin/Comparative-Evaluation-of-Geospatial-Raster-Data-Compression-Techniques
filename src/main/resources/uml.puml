@@ -1,17 +1,21 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class Compressor
 
+DoubleCompressor <|-- ICompressor
+IntCompressor <|-- ICompressor
 
-BitShavingCompressor <|-- Compressor
-BitGroomingCompressor <|-- Compressor
-FpcCompressor <|-- Compressor
-DigitRoutingCompressor <|-- Compressor
-K2RasterCompressor <|-- Compressor
+BitShavingCompressor <|.. DoubleCompressor
+BitGroomingCompressor <|.. DoubleCompressor
+FpcCompressor <|.. DoubleCompressor
+DigitRoutingCompressor <|.. DoubleCompressor
+K2RasterCompressor <|.. IntCompressor
+SZCompressor <|.. DoubleCompressor
 
 K2Tree *-- K2Node
 DigitRouting -- MantissaExponent
+MatrixConverter *-- ZCurve
+K2RasterCompressor -- MatrixConverter
 
 FPC *-- DfcmPredictor
 FPC *--FcmPredictor
@@ -21,29 +25,58 @@ BitGroomingCompressor *-- BitGrooming
 BitShavingCompressor *-- BitShaving
 DigitRoutingCompressor *-- DigitRouting
 K2RasterCompressor *-- K2Tree
+SZCompressor *-- SZ
 
-abstract class Compressor {
+TypeUtils -- SZ
+TypeUtils -- K2Tree
+TypeUtils -- K2Node
+TypeUtils -- FPC
+
+interface ICompressor {
++ {abstract} String getParameters()
+}
+
+interface IntCompressor {
++ {abstract} byte[] compress(int[] data)
++ {abstract} int[] decompress(byte[] data)
+}
+
+interface DoubleCompressor {
 + {abstract} byte[] compress(double[] data)
 + {abstract} double[] decompress(byte[] data)
-+ {abstract} String getParameters()
-+ {abstract} String toString()
+}
+
+class SZCompressor {
++ String toString()
 }
 
 class K2RasterCompressor {
++ String toString()
 }
 
 class DigitRoutingCompressor {
++ String toString()
 }
 
 class FpcCompressor {
-
++ String toString()
 }
 
 class BitGroomingCompressor {
-
++ String toString()
 }
 
 class BitShavingCompressor {
++ String toString()
+}
+
+class SZ {
+- double error
++ SZ(double error)
++ byte[] encode(double[] data)
++ double[] decode(byte[] data)
++ double getError()
+- char getBestFitSolution(double pnf, double lcf, double qcf, double value)
 
 }
 
@@ -90,14 +123,22 @@ class FPC {
 - int indexDecode
 + byte[] compress(byte[] buffer, double[] data)
 + double[] decompress(byte[] buffer, double[] data)
-+ long toLong(byte[] data)
-+ byte[] toByteArray(long data)
 - void decode(byte[] buffer, double[] data, int i)
 - void encodeAndPad(byte[] buffer, double d)
-- int encodeZeroBytes(long diff1d)
 - void encode(byte[] buffer, double d, double e)
 - boolean updatePredictors(long bits, long diff1, long diff2)
 - void checkPrediction(byte[] buffer, long diff1, long diff2, boolean isPredictorBetter)
+}
+
+class TypeUtils {
++ {static} byte[] doubleToByteArray(double value)
++ {static} long byteArrayToLong(byte[] data)
++ {static} byte[] longToByteArray(long data)
++ {static} int encodeZeroBytes(long value)
++ {static} byte[] intArrayToByteArray(int[] array)
++ {static} int[] byteArrayToIntArray(byte[] byteArray)
++ {static} int byteArrayToInt(byte[] data)
++ {static} byte[] intToByteArray(int value)
 }
 
 class BitGrooming {
@@ -147,6 +188,23 @@ class MantissaExponent {
 + MantissaExponent(int exponent, double mantissa)
 + int getExponent()
 + double getMantissa()
+}
+
+class MatrixConverter {
+-{static} ZCurve zCurveCoder
++ int[] decodeArray(BitMatrix codedData, int size)
++ BitMatrix encodeArray(final int[] rasterData)
++ BitMatrix encodeMatrix(int[][] rasterData)
++ int[][] decodeMatrix(BitMatrix codedData, int size)
+}
+
+class ZCurve {
+- {static} int[] MORTON_TABLE_256
+- {static} int[] MORTON_TABLE_256_DECODE_X
+- {static} int[] MORTON_TABLE_256_DECODE_Y
++ int encode(int x, int y)
++ int[] decode(long index)
+- int decodeHelper(long index, int[] table)
 }
 
 

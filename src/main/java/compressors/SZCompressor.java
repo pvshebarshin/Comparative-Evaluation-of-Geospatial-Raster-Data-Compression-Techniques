@@ -1,6 +1,7 @@
 package compressors;
 
 import algorithms.sz.SZ;
+import compressors.interfaces.DoubleCompressor;
 import compressors.utils.DeflaterUtils;
 
 import java.io.IOException;

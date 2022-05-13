@@ -15,7 +15,7 @@ public class SZ {
         this.error = error;
     }
 
-    public byte[] encode(double[] data) {
+    public byte[] encode(double[] data) throws SZByteCodeException {
         if (data.length < 4) {
             throw new ArithmeticException("Array size is too small. It must be more then 3");
         }
@@ -51,29 +51,31 @@ public class SZ {
             qcf = 3 * data[i - 1] - 3 * data[i - 2] + data[i - 3];
             char bestFitSolution = getBestFitSolution(pnf, lcf, qcf, data[i]);
             switch (bestFitSolution) {
-                case 'N': // 1
+                case 'N':
                     result[indexEncode++] = (byte) 1;
                     break;
-                case 'L': // 2
+                case 'L':
                     result[indexEncode++] = (byte) 2;
                     break;
-                case 'Q': // 3
+                case 'Q':
                     result[indexEncode++] = (byte) 3;
                     break;
-                case '-': // 4
+                case '-':
                     result[indexEncode++] = (byte) 0;
                     byteArray = doubleToByteArray(data[i] - median);
                     for (byte _byte : byteArray) {
                         result[indexEncode++] = _byte;
                     }
                     break;
+                default:
+                    throw new SZByteCodeException("Incorrect double data");
             }
         }
 
         return result;
     }
 
-    public double[] decode(byte[] data) {
+    public double[] decode(byte[] data) throws SZByteCodeException {
         int indexDecode = 0;
         byte[] byteArray = new byte[8];
         for (; indexDecode < 8; indexDecode++) {
@@ -119,7 +121,7 @@ public class SZ {
                             + result[indexResult - 3];
                     break;
                 default:
-                    throw new RuntimeException("Incorrect byte code");
+                    throw new SZByteCodeException("Incorrect byte code");
             }
         }
         return result;

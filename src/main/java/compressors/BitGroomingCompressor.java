@@ -2,6 +2,7 @@ package compressors;
 
 import algorithms.bitgrooming.NSD;
 import algorithms.bitgrooming.BitGrooming;
+import compressors.interfaces.DoubleCompressor;
 import compressors.utils.DeflaterUtils;
 
 import java.io.IOException;

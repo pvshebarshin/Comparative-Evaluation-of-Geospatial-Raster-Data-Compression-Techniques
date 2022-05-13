@@ -9,8 +9,8 @@ public final class TypeUtils {
     private TypeUtils() {
     }
 
-    public static byte[] doubleToByteArray(double dblValue) {
-        long data = Double.doubleToRawLongBits(dblValue);
+    public static byte[] doubleToByteArray(double value) {
+        long data = Double.doubleToRawLongBits(value);
         return new byte[]{
                 (byte) ((data >> 56) & 0xff),
                 (byte) ((data >> 48) & 0xff),
@@ -45,8 +45,8 @@ public final class TypeUtils {
         return array;
     }
 
-    public static int encodeZeroBytes(long diff) {
-        int leadingZeroBytes = Long.numberOfLeadingZeros(diff) / 8;
+    public static int encodeZeroBytes(long value) {
+        int leadingZeroBytes = Long.numberOfLeadingZeros(value) / 8;
         if (leadingZeroBytes >= 4) {
             leadingZeroBytes--;
         }
@@ -73,11 +73,11 @@ public final class TypeUtils {
         return array;
     }
 
-    public static int byteArrayToInt(byte[] bytes) {
-        return bytes[3] & 0xFF |
-                (bytes[2] & 0xFF) << 8 |
-                (bytes[1] & 0xFF) << 16 |
-                (bytes[0] & 0xFF) << 24;
+    public static int byteArrayToInt(byte[] data) {
+        return data[3] & 0xFF |
+                (data[2] & 0xFF) << 8 |
+                (data[1] & 0xFF) << 16 |
+                (data[0] & 0xFF) << 24;
     }
 
     public static byte[] intToByteArray(int value) {

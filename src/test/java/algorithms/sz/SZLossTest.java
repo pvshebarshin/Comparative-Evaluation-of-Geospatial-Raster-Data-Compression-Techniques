@@ -55,7 +55,7 @@ public class SZLossTest {
     }
 
     @Test
-    public void szLosslessTest() {
+    public void szLosslessTest() throws SZByteCodeException {
         SZ sz = new SZ(0.3);
         byte[] byteArray = sz.encode(parameter.ArrayToCompress);
         double[] resultArray = sz.decode(byteArray);

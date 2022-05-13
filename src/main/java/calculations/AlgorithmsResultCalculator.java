@@ -1,6 +1,9 @@
 package calculations;
 
 import compressors.*;
+import compressors.interfaces.DoubleCompressor;
+import compressors.interfaces.ICompressor;
+import compressors.interfaces.IntCompressor;
 import compressors.utils.DeflaterUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -219,11 +222,11 @@ public final class AlgorithmsResultCalculator {
 //        compressors.add(new FPCCompressor());
 
 //        compressors.add(new SZCompressor(0.0));
-//        compressors.add(new SZDoubleCompressor(0.01));
-//        compressors.add(new SZDoubleCompressor(0.05));
-//        compressors.add(new SZDoubleCompressor(0.1));
-//        compressors.add(new SZDoubleCompressor(0.2));
-//        compressors.add(new SZDoubleCompressor(0.3));
+//        compressors.add(new SZCompressor(0.01));
+//        compressors.add(new SZCompressor(0.05));
+//        compressors.add(new SZCompressor(0.1));
+//        compressors.add(new SZCompressor(0.2));
+//        compressors.add(new SZCompressor(0.3));
 
 //        for (NSD nsd : NSD.values()) {
 //            compressors.add(new BitGroomingCompressor(nsd));
