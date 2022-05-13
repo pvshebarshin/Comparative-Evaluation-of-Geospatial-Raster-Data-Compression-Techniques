@@ -2,15 +2,16 @@
 'https://plantuml.com/class-diagram
 
 
-DoubleCompressor <|-- ICompressor
-IntCompressor <|-- ICompressor
 
-BitShavingCompressor <|.. DoubleCompressor
-BitGroomingCompressor <|.. DoubleCompressor
-FpcCompressor <|.. DoubleCompressor
-DigitRoutingCompressor <|.. DoubleCompressor
-K2RasterCompressor <|.. IntCompressor
-SZCompressor <|.. DoubleCompressor
+DoubleCompressor --|> ICompressor
+IntCompressor --|> ICompressor
+
+BitShavingCompressor ..|> DoubleCompressor
+BitGroomingCompressor ..|> DoubleCompressor
+FpcCompressor ..|> DoubleCompressor
+DigitRoutingCompressor ..|> DoubleCompressor
+K2RasterCompressor ..|> IntCompressor
+SZCompressor ..|> DoubleCompressor
 
 K2Tree *-- K2Node
 DigitRouting -- MantissaExponent
