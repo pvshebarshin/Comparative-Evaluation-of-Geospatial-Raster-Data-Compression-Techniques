@@ -33,7 +33,7 @@ public final class AlgorithmsResultCalculator {
 
     private static final int DEPTH_OF_READING_DATA_IN_DIRECTORY = 2;
 
-    public void makeCalculations(String doubleStoreDirectory, String uintStoreDirectory, String resultFilePath) throws DataFormatException, IOException {
+    public void makeCalculations(String doubleStoreDirectory, String uintStoreDirectory, String resultFilePath) {
         List<ICompressor> doubleCompressors = initList();
         Path path = getResultPath(resultFilePath);
         List<String> fileNameMassDouble = listFilesForFolder(doubleStoreDirectory);
@@ -48,8 +48,36 @@ public final class AlgorithmsResultCalculator {
         }
     }
 
-    private void makeMeasurementsFromFileList(Path path, List<String> fileNameMassUint, ICompressor doubleCompressor)
-            throws DataFormatException, IOException {
+    private List<ICompressor> initList() {
+        List<ICompressor> compressors = new ArrayList<>();
+
+        compressors.add(new FPCCompressor());
+
+        compressors.add(new SZCompressor(0.0));
+        compressors.add(new SZCompressor(0.01));
+        compressors.add(new SZCompressor(0.05));
+        compressors.add(new SZCompressor(0.1));
+        compressors.add(new SZCompressor(0.2));
+        compressors.add(new SZCompressor(0.3));
+
+        for (NSD nsd : NSD.values()) {
+            compressors.add(new BitGroomingCompressor(nsd));
+        }
+
+        for (int i = 0; i < 53; i++) {
+            compressors.add(new BitShavingCompressor(i));
+        }
+
+        for (int i = 0; i < 53; i++) {
+            compressors.add(new DigitRoutingCompressor(i));
+        }
+
+        compressors.add(new K2RasterCompressor());
+
+        return compressors;
+    }
+
+    private void makeMeasurementsFromFileList(Path path, List<String> fileNameMassUint, ICompressor doubleCompressor) {
         for (String fileName : fileNameMassUint) {
             try {
                 LOG.log(Level.DEBUG, () -> doubleCompressor.toString() + " " + doubleCompressor.getParameters());
@@ -72,40 +100,12 @@ public final class AlgorithmsResultCalculator {
             time = System.nanoTime();
             compressedData = ((IntCompressor) compressor).compress(data);
             time = System.nanoTime() - time;
-            Files.write(
-                    path,
-                    (
-                            Measuring.newBuilder()
-                                    .setName(compressor.toString())
-                                    .setRatio(DeflaterUtils.getRatio())
-                                    .setTime(time)
-                                    .setSize(data.length * 8L)
-                                    .setParameters(compressor.getParameters())
-                                    .setType("C")
-                                    .build()
-                                    .toString() + '\n'
-                    ).getBytes(),
-                    StandardOpenOption.APPEND
-            );
+            writeMeasuringToFile(path, compressor, data, time, "C");
 
             time = System.nanoTime();
             ((IntCompressor) compressor).decompress(compressedData);
             time = System.nanoTime() - time;
-            Files.write(
-                    path,
-                    (
-                            Measuring.newBuilder()
-                                    .setName(compressor.toString())
-                                    .setRatio(DeflaterUtils.getRatio())
-                                    .setTime(time)
-                                    .setSize(data.length * 8L)
-                                    .setParameters(compressor.getParameters())
-                                    .setType("D")
-                                    .build()
-                                    .toString() + '\n'
-                    ).getBytes(),
-                    StandardOpenOption.APPEND
-            );
+            writeMeasuringToFile(path, compressor, data, time, "D");
         } else {
             double[] data = parseRasterFileDouble(fileName);
             byte[] compressedData;
@@ -114,41 +114,26 @@ public final class AlgorithmsResultCalculator {
             time = System.nanoTime();
             compressedData = ((DoubleCompressor) compressor).compress(data);
             time = System.nanoTime() - time;
-            Files.write(
-                    path,
-                    (
-                            Measuring.newBuilder()
-                                    .setName(compressor.toString())
-                                    .setRatio(DeflaterUtils.getRatio())
-                                    .setTime(time)
-                                    .setSize(data.length * 8L)
-                                    .setParameters(compressor.getParameters())
-                                    .setType("C")
-                                    .build()
-                                    .toString() + '\n'
-                    ).getBytes(),
-                    StandardOpenOption.APPEND
-            );
+            writeMeasuringToFile(path, compressor, data, time, "C");
 
             time = System.nanoTime();
             ((DoubleCompressor) compressor).decompress(compressedData);
             time = System.nanoTime() - time;
-            Files.write(
-                    path,
-                    (
-                            Measuring.newBuilder()
-                                    .setName(compressor.toString())
-                                    .setRatio(DeflaterUtils.getRatio())
-                                    .setTime(time)
-                                    .setSize(data.length * 8L)
-                                    .setParameters(compressor.getParameters())
-                                    .setType("D")
-                                    .build()
-                                    .toString() + '\n'
-                    ).getBytes(),
-                    StandardOpenOption.APPEND
-            );
+            writeMeasuringToFile(path, compressor, data, time, "D");
         }
+    }
+
+    private static Raster getRasterByGeoTiff(String fileName) throws IOException {
+        GeoTiffReader reader = new GeoTiffReader(new File(fileName));
+        GridCoverage2D coverage = reader.read(null);
+
+        if (coverage == null) {
+            LOG.error(() -> "GridCoverage2D is null");
+            throw new CalculationException("Incorrect file name:" + fileName);
+        }
+
+        RenderedImage image = coverage.getRenderedImage();
+        return image.getData();
     }
 
     private List<String> listFilesForFolder(String storeDirectory) {
@@ -205,45 +190,49 @@ public final class AlgorithmsResultCalculator {
         return newByteArray;
     }
 
-    private static Raster getRasterByGeoTiff(String fileName) throws IOException {
-        GeoTiffReader reader = new GeoTiffReader(new File(fileName));
-        GridCoverage2D coverage = reader.read(null);
-
-        if (coverage == null) {
-            LOG.error(() -> "GridCoverage2D is null");
-            throw new CalculationException("Incorrect file name:" + fileName);
-        }
-
-        RenderedImage image = coverage.getRenderedImage();
-        return image.getData();
+    private void writeMeasuringToFile(Path path,
+                                      ICompressor compressor,
+                                      int[] data,
+                                      long time,
+                                      String typeOfOperation)
+            throws IOException {
+        Files.write(
+                path,
+                (
+                        Measuring.newBuilder()
+                                .setName(compressor.toString())
+                                .setRatio(DeflaterUtils.getRatio())
+                                .setTime(time)
+                                .setSize(data.length * 8L)
+                                .setParameters(compressor.getParameters())
+                                .setType(typeOfOperation)
+                                .build()
+                                .toString() + '\n'
+                ).getBytes(),
+                StandardOpenOption.APPEND
+        );
     }
 
-    private List<ICompressor> initList() {
-        List<ICompressor> compressors = new ArrayList<>();
-
-        compressors.add(new FPCCompressor());
-
-        compressors.add(new SZCompressor(0.0));
-        compressors.add(new SZCompressor(0.01));
-        compressors.add(new SZCompressor(0.05));
-        compressors.add(new SZCompressor(0.1));
-        compressors.add(new SZCompressor(0.2));
-        compressors.add(new SZCompressor(0.3));
-
-        for (NSD nsd : NSD.values()) {
-            compressors.add(new BitGroomingCompressor(nsd));
-        }
-
-        for (int i = 0; i < 53; i++) {
-            compressors.add(new BitShavingCompressor(i));
-        }
-
-        for (int i = 0; i < 53; i++) {
-            compressors.add(new DigitRoutingCompressor(i));
-        }
-
-        compressors.add(new K2RasterCompressor());
-
-        return compressors;
+    private void writeMeasuringToFile(Path path,
+                                      ICompressor compressor,
+                                      double[] data,
+                                      long time,
+                                      String typeOfOperation)
+            throws IOException {
+        Files.write(
+                path,
+                (
+                        Measuring.newBuilder()
+                                .setName(compressor.toString())
+                                .setRatio(DeflaterUtils.getRatio())
+                                .setTime(time)
+                                .setSize(data.length * 8L)
+                                .setParameters(compressor.getParameters())
+                                .setType(typeOfOperation)
+                                .build()
+                                .toString() + '\n'
+                ).getBytes(),
+                StandardOpenOption.APPEND
+        );
     }
 }
