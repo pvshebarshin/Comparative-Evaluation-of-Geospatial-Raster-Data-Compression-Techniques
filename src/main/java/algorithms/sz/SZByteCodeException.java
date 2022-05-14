@@ -1,8 +1,8 @@
 package algorithms.sz;
 
-import java.util.zip.DataFormatException;
+import java.io.IOException;
 
-public class SZByteCodeException extends DataFormatException {
+public class SZByteCodeException extends IOException {
     public SZByteCodeException(String message) {
         super(message);
     }

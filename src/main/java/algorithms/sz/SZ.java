@@ -1,6 +1,7 @@
 package algorithms.sz;
 
 import java.util.Arrays;
+import java.util.zip.DataFormatException;
 
 import static algorithms.utils.TypeUtils.byteArrayToDouble;
 import static algorithms.utils.TypeUtils.byteArrayToInt;
