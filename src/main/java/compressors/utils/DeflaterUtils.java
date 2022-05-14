@@ -20,47 +20,27 @@ public final class DeflaterUtils {
     }
 
     public static byte[] compressByteArray(byte[] data) throws IOException {
-        Deflater deflater = new Deflater();
-        deflater.setInput(data);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-
-        deflater.finish();
-        byte[] buffer = new byte[1024];
-        while (!deflater.finished()) {
-            int count = deflater.deflate(buffer); // returns the generated code... index
-            outputStream.write(buffer, 0, count);
-        }
-        outputStream.close();
+        ByteArrayOutputStream outputStream = getArrayOutputStreamForCompression(data);
 
         byte[] output = outputStream.toByteArray();
-        ratio = ((double) data.length / (double) output.length);
-
         LOG.debug(() -> "Original: " + data.length / 1024f + " Kb");
         LOG.debug(() -> "Compressed: " + output.length / 1024f + " Kb");
 
-        return outputStream.toByteArray();
+        ratio = ((double) data.length / (double) output.length);
+
+        return output;
     }
 
     public static byte[] decompressByteArray(byte[] data) throws IOException, DataFormatException {
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        while (!inflater.finished()) {
-            int count = inflater.inflate(buffer);
-            outputStream.write(buffer, 0, count);
-        }
-        outputStream.close();
+        ByteArrayOutputStream outputStream = getByteArrayOutputStreamForDecompression(data);
 
         byte[] output = outputStream.toByteArray();
-        ratio = ((double) output.length) / ((double) data.length);
-
         LOG.debug(() -> "Compressed: " + data.length / 1024f + " Kb");
         LOG.debug(() -> "Original: " + output.length / 1024f + " Kb");
 
-        return outputStream.toByteArray();
+        ratio = ((double) output.length) / ((double) data.length);
+
+        return output;
     }
 
     public static byte[] convertLowerAccuracyDoublesToBits(double[] data) throws IOException {
@@ -83,5 +63,66 @@ public final class DeflaterUtils {
 
     public static double getRatio() {
         return ratio;
+    }
+
+    public static byte[] getRatio(byte[] data, int size) {
+        LOG.debug(() -> "Original: " + size / 1024f + " Kb");
+        LOG.debug(() -> "Compressed: " + data.length / 1024f + " Kb");
+        ratio = ((double) size) / ((double) data.length);
+        return data;
+    }
+
+    public static byte[] compressByteArrayForSZ(byte[] data, int size) throws IOException {
+        ByteArrayOutputStream outputStream = getArrayOutputStreamForCompression(data);
+
+        byte[] output = outputStream.toByteArray();
+        LOG.debug(() -> "Original: " + size / 1024f + " Kb");
+        LOG.debug(() -> "Compressed: " + output.length / 1024f + " Kb");
+
+        ratio = ((double) size / (double) output.length);
+
+        return output;
+    }
+
+    public static byte[] decompressByteArrayForSZ(byte[] data, int size) throws IOException, DataFormatException {
+        ByteArrayOutputStream outputStream = getByteArrayOutputStreamForDecompression(data);
+
+        LOG.debug(() -> "Compressed: " + data.length / 1024f + " Kb");
+        LOG.debug(() -> "Original: " + size / 1024f + " Kb");
+
+        ratio = ((double) size) / ((double) data.length);
+
+        return outputStream.toByteArray();
+    }
+
+    private static ByteArrayOutputStream getByteArrayOutputStreamForDecompression(byte[] data)
+            throws DataFormatException, IOException {
+        Inflater inflater = new Inflater();
+        inflater.setInput(data);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+        while (!inflater.finished()) {
+            int count = inflater.inflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        outputStream.close();
+        return outputStream;
+    }
+
+    private static ByteArrayOutputStream getArrayOutputStreamForCompression(byte[] data) throws IOException {
+        Deflater deflater = new Deflater();
+        deflater.setInput(data);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+
+        deflater.finish();
+        byte[] buffer = new byte[1024];
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        outputStream.close();
+        return outputStream;
     }
 }

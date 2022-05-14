@@ -6,7 +6,6 @@ import compressors.interfaces.IntCompressor;
 import compressors.utils.DeflaterUtils;
 
 import java.io.IOException;
-import java.util.zip.DataFormatException;
 
 public class K2RasterCompressor extends KRasterCompressor implements IntCompressor {
 
@@ -14,33 +13,27 @@ public class K2RasterCompressor extends KRasterCompressor implements IntCompress
     public byte[] compress(int[] data) throws IOException {
         MatrixConverter matrixConverter = new MatrixConverter();
         K2Tree k2Tree = new K2Tree(matrixConverter.encodeArray(data), data.length);
-        return DeflaterUtils.compressByteArray(
-                K2Tree.serialize(k2Tree)
-        );
+        return DeflaterUtils.getRatio(K2Tree.serialize(k2Tree), data.length * 4);
     }
 
     @Override
-    public int[] decompress(byte[] data) throws DataFormatException, IOException {
+    public int[] decompress(byte[] data) {
         MatrixConverter matrixConverter = new MatrixConverter();
-        K2Tree k2Tree = K2Tree.deserialize(
-                DeflaterUtils.decompressByteArray(data)
-        );
+        K2Tree k2Tree = K2Tree.deserialize(data);
         return matrixConverter.decodeArray(k2Tree.toMatrix(), k2Tree.getZMassSize());
     }
 
-    public byte[] compressMatrix(int[][] data) throws IOException {
+    public byte[] compressMatrix(int[][] data) {
         MatrixConverter matrixConverter = new MatrixConverter();
         K2Tree k2Tree = new K2Tree(matrixConverter.encodeMatrix(data), data.length * data[0].length);
-        return DeflaterUtils.compressByteArray(
-                K2Tree.serialize(k2Tree)
+        return DeflaterUtils.getRatio(
+                K2Tree.serialize(k2Tree), data.length * data[0].length * 4
         );
     }
 
-    public int[][] decompressMatrix(byte[] data) throws DataFormatException, IOException {
+    public int[][] decompressMatrix(byte[] data) {
         MatrixConverter matrixConverter = new MatrixConverter();
-        K2Tree k2Tree = K2Tree.deserialize(
-                DeflaterUtils.decompressByteArray(data)
-        );
+        K2Tree k2Tree = K2Tree.deserialize(data);
         return matrixConverter.decodeMatrix(k2Tree.toMatrix(), k2Tree.getZMassSize());
     }
 

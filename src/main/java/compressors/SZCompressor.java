@@ -11,18 +11,21 @@ public class SZCompressor implements DoubleCompressor {
 
     private final SZ sz;
 
+    private int size;
+
     public SZCompressor(double error) {
         sz = new SZ(error);
     }
 
     @Override
     public byte[] compress(double[] data) throws IOException {
-        return DeflaterUtils.compressByteArray(sz.encode(data));
+        size = data.length * 8;
+        return DeflaterUtils.compressByteArrayForSZ(sz.encode(data), size);
     }
 
     @Override
     public double[] decompress(byte[] data) throws DataFormatException, IOException {
-        return sz.decode(DeflaterUtils.decompressByteArray(data));
+        return sz.decode(DeflaterUtils.decompressByteArrayForSZ(data, size));
     }
 
     @Override

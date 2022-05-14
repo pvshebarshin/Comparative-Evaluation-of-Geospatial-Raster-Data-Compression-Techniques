@@ -1,5 +1,6 @@
 package calculations;
 
+import algorithms.bitgrooming.NSD;
 import compressors.*;
 import compressors.interfaces.DoubleCompressor;
 import compressors.interfaces.ICompressor;
@@ -219,25 +220,30 @@ public final class AlgorithmsResultCalculator {
 
     private List<ICompressor> initList() {
         List<ICompressor> compressors = new ArrayList<>();
-//        compressors.add(new FPCCompressor());
 
-//        compressors.add(new SZCompressor(0.0));
-//        compressors.add(new SZCompressor(0.01));
-//        compressors.add(new SZCompressor(0.05));
-//        compressors.add(new SZCompressor(0.1));
-//        compressors.add(new SZCompressor(0.2));
-//        compressors.add(new SZCompressor(0.3));
+        compressors.add(new FPCCompressor());
 
-//        for (NSD nsd : NSD.values()) {
-//            compressors.add(new BitGroomingCompressor(nsd));
-//        }
-//        for (int i = 0; i < 53; i++) {
-//            compressors.add(new BitShavingCompressor(i));
-//        }
-//        for (int i = 0; i < 53; i++) {
-//            compressors.add(new DigitRoutingCompressor(i));
-//        }
+        compressors.add(new SZCompressor(0.0));
+        compressors.add(new SZCompressor(0.01));
+        compressors.add(new SZCompressor(0.05));
+        compressors.add(new SZCompressor(0.1));
+        compressors.add(new SZCompressor(0.2));
+        compressors.add(new SZCompressor(0.3));
+
+        for (NSD nsd : NSD.values()) {
+            compressors.add(new BitGroomingCompressor(nsd));
+        }
+
+        for (int i = 0; i < 53; i++) {
+            compressors.add(new BitShavingCompressor(i));
+        }
+
+        for (int i = 0; i < 53; i++) {
+            compressors.add(new DigitRoutingCompressor(i));
+        }
+
         compressors.add(new K2RasterCompressor());
+
         return compressors;
     }
 }
