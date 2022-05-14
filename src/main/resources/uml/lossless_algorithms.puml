@@ -1,0 +1,146 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+DoubleCompressor --|> ICompressor
+IntCompressor --|> ICompressor
+
+FpcCompressor ..|> DoubleCompressor
+K2RasterCompressor ..|> IntCompressor
+SZCompressor ..|> DoubleCompressor
+
+K2Tree *-- K2Node
+MatrixConverter *-- ZCurve
+K2RasterCompressor -- MatrixConverter
+
+FPC *-- DfcmPredictor
+FPC *--FcmPredictor
+FpcCompressor *-- FPC
+K2RasterCompressor *-- K2Tree
+SZCompressor *-- SZ
+
+TypeUtils -- SZ
+TypeUtils -- K2Tree
+TypeUtils -- K2Node
+TypeUtils -- FPC
+
+interface ICompressor {
++ {abstract} String getParameters()
+}
+
+interface IntCompressor {
++ {abstract} byte[] compress(int[] data)
++ {abstract} int[] decompress(byte[] data)
+}
+
+interface DoubleCompressor {
++ {abstract} byte[] compress(double[] data)
++ {abstract} double[] decompress(byte[] data)
+}
+
+class SZCompressor {
++ String toString()
+}
+
+class K2RasterCompressor {
++ String toString()
+}
+
+class FpcCompressor {
++ String toString()
+}
+
+class SZ {
+- double error
++ SZ(double error)
++ byte[] encode(double[] data)
++ double[] decode(byte[] data)
++ double getError()
+- char getBestFitSolution(double pnf, double lcf, double qcf, double value)
+}
+
+class K2Node {
+- boolean min;
+- boolean max;
+- K2Node parent;
+- K2Node[] children;
+- BitMatrix matrix;
++ K2Node(boolean min, boolean max)
++ K2Node(boolean min, boolean max, K2Node parent, BitMatrix matrix)
++ K2Node(K2Node parent, BitMatrix matrix)
++ byte[] toBytes()
+}
+
+class K2Tree{
+- K2Node root
++ K2Node getRoot()
++ K2Tree(BitMatrix matrix)
++ BitMatrix toMatrix()
++ {static} byte[] serialize(K2Tree k2Tree)
++ {static} K2Tree deserialize(byte[] byteArray)
+- K2Tree(K2Node root)
+- BitMatrix toMatrix(K2Node node)
+- {static} void serialize(K2Node node, List<Byte> byteArray)
+- {static} K2Node deserialize(Deque<Byte> bytes)
+}
+
+class FPC {
+- {static} int LOG_OF_TABLE_SIZE
+- FcmPredictor predictor1
+- DfcmPredictor predictor2
+- int indexEncode
+- int indexDecode
++ byte[] compress(byte[] buffer, double[] data)
++ double[] decompress(byte[] buffer, double[] data)
+- void decode(byte[] buffer, double[] data, int i)
+- void encodeAndPad(byte[] buffer, double d)
+- void encode(byte[] buffer, double d, double e)
+- boolean updatePredictors(long bits, long diff1, long diff2)
+- void checkPrediction(byte[] buffer, long diff1, long diff2, boolean isPredictorBetter)
+}
+
+class TypeUtils {
++ {static} byte[] doubleToByteArray(double value)
++ {static} long byteArrayToLong(byte[] data)
++ {static} byte[] longToByteArray(long data)
++ {static} int encodeZeroBytes(long value)
++ {static} byte[] intArrayToByteArray(int[] array)
++ {static} int[] byteArrayToIntArray(byte[] byteArray)
++ {static} int byteArrayToInt(byte[] data)
++ {static} byte[] intToByteArray(int value)
+}
+
+class FcmPredictor{
+- long[] table
+- int fcmHash
++ FcmPredictor(int logOfTableSize)
++ long getPrediction()
++ void update(long trueValue)
+}
+
+class DfcmPredictor{
+- long[] table
+- int dfcm_hash
+- long lastValue
++ DfcmPredictor(int logOfTableSize)
++ long getPrediction()
++ void update(long trueValue)
+}
+
+class MatrixConverter {
+-{static} ZCurve zCurveCoder
++ int[] decodeArray(BitMatrix codedData, int size)
++ BitMatrix encodeArray(final int[] rasterData)
++ BitMatrix encodeMatrix(int[][] rasterData)
++ int[][] decodeMatrix(BitMatrix codedData, int size)
+}
+
+class ZCurve {
+- {static} int[] MORTON_TABLE_256
+- {static} int[] MORTON_TABLE_256_DECODE_X
+- {static} int[] MORTON_TABLE_256_DECODE_Y
++ int encode(int x, int y)
++ int[] decode(long index)
+- int decodeHelper(long index, int[] table)
+}
+
+@enduml

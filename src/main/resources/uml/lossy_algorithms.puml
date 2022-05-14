@@ -1,0 +1,111 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+DoubleCompressor --|> ICompressor
+
+BitShavingCompressor ..|> DoubleCompressor
+BitGroomingCompressor ..|> DoubleCompressor
+DigitRoutingCompressor ..|> DoubleCompressor
+SZCompressor ..|> DoubleCompressor
+
+DigitRouting -- MantissaExponent
+
+BitGrooming *-- NSD
+BitGroomingCompressor *-- BitGrooming
+BitShavingCompressor *-- BitShaving
+DigitRoutingCompressor *-- DigitRouting
+SZCompressor *-- SZ
+
+TypeUtils -- SZ
+
+interface ICompressor {
++ {abstract} String getParameters()
+}
+
+interface DoubleCompressor {
++ {abstract} byte[] compress(double[] data)
++ {abstract} double[] decompress(byte[] data)
+}
+
+class SZCompressor {
++ String toString()
+}
+
+class DigitRoutingCompressor {
++ String toString()
+}
+
+class BitGroomingCompressor {
++ String toString()
+}
+
+class BitShavingCompressor {
++ String toString()
+}
+
+class SZ {
+- double error
++ SZ(double error)
++ byte[] encode(double[] data)
++ double[] decode(byte[] data)
++ double getError()
+- char getBestFitSolution(double pnf, double lcf, double qcf, double value)
+
+}
+
+class BitShaving{
+- long bitMask
+- long ALL_ONES_FOR_DOUBLE
+- int FRACTIONAL_64_BIT
++ BitShavingDouble(int bits)
++ double[] encode(double[] data)
+- {static} long getBitMask(int bitN)
+- double bitShaveForDouble(double value, long bitMask)
+}
+
+class TypeUtils {
++ {static} byte[] doubleToByteArray(double value)
++ {static} long byteArrayToLong(byte[] data)
++ {static} byte[] longToByteArray(long data)
++ {static} int encodeZeroBytes(long value)
++ {static} byte[] intArrayToByteArray(int[] array)
++ {static} int[] byteArrayToIntArray(byte[] byteArray)
++ {static} int byteArrayToInt(byte[] data)
++ {static} byte[] intToByteArray(int value)
+}
+
+class BitGrooming {
+- {static} double M_LN10
+- {static} double M_LN2
+- {static} int BIT_XPL_NBR_SGN_DBL
+- {static} double BIT_PER_DCM_DGT_PRC
++ double[] encode(double[] data, NSD nsd)
+}
+
+enum NSD{
++ NSD1
+...
++ NSD15
+- int value
++ NSD(int value)
++ int getValue()
+}
+
+class DigitRouting {
+- double LOG10_2
+- double LOG2_10
+- double[][] TABLE
++ double[] encode(double[] data, int nsd)
+- MantissaExponent frexp(double value)
+}
+
+class MantissaExponent {
+- int exponent
+- double mantissa
++ MantissaExponent(int exponent, double mantissa)
++ int getExponent()
++ double getMantissa()
+}
+
+
+@enduml
