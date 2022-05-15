@@ -6,7 +6,6 @@ import compressors.interfaces.DoubleCompressor;
 import compressors.interfaces.ICompressor;
 import compressors.interfaces.IntCompressor;
 import compressors.utils.DeflaterUtils;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -33,6 +32,13 @@ public final class AlgorithmsResultCalculator {
 
     private static final int DEPTH_OF_READING_DATA_IN_DIRECTORY = 2;
 
+    /**
+     * Make calculations of algorithms compressors on entered data
+     *
+     * @param doubleStoreDirectory Directory for double data
+     * @param uintStoreDirectory   Directory for uint data
+     * @param resultFilePath       Path for result file
+     */
     public void makeCalculations(String doubleStoreDirectory, String uintStoreDirectory, String resultFilePath) {
         List<ICompressor> doubleCompressors = initList();
         Path path = getResultPath(resultFilePath);
@@ -48,6 +54,11 @@ public final class AlgorithmsResultCalculator {
         }
     }
 
+    /**
+     * Initialization of compressors list
+     *
+     * @return Compressors list
+     */
     private List<ICompressor> initList() {
         List<ICompressor> compressors = new ArrayList<>();
 
@@ -77,12 +88,19 @@ public final class AlgorithmsResultCalculator {
         return compressors;
     }
 
-    private void makeMeasurementsFromFileList(Path path, List<String> fileNameMassUint, ICompressor doubleCompressor) {
-        for (String fileName : fileNameMassUint) {
+    /**
+     * Makes measurements of a certain compressor on an array of all the images that were in the entered directory
+     *
+     * @param path         Path to file with measuring results
+     * @param fileNameMass Array of input data file names
+     * @param compressor   Compressor with algorithm implementation
+     */
+    private void makeMeasurementsFromFileList(Path path, List<String> fileNameMass, ICompressor compressor) {
+        for (String fileName : fileNameMass) {
             try {
-                LOG.log(Level.DEBUG, () -> doubleCompressor.toString() + " " + doubleCompressor.getParameters());
+                LOG.debug(() -> compressor.toString() + " " + compressor.getParameters());
                 LOG.debug(() -> "Begin of Measuring");
-                makeMeasuring(path, fileName, doubleCompressor);
+                makeMeasuring(path, fileName, compressor);
                 LOG.debug(() -> "End of Measuring");
             } catch (Exception e) {
                 LOG.error(e::getLocalizedMessage);
@@ -90,6 +108,15 @@ public final class AlgorithmsResultCalculator {
         }
     }
 
+    /**
+     * Make single measuring
+     *
+     * @param path       Path to file with measuring results
+     * @param fileName   Name of input file
+     * @param compressor Compressor with algorithm implementation
+     * @throws IOException         Exception while read or write file
+     * @throws DataFormatException Exception wile deflate bata
+     */
     private void makeMeasuring(Path path, String fileName, ICompressor compressor)
             throws IOException, DataFormatException {
         if (compressor instanceof KRasterCompressor) {
@@ -123,6 +150,13 @@ public final class AlgorithmsResultCalculator {
         }
     }
 
+    /**
+     * Get raster from file name by GeoTiff
+     *
+     * @param fileName Name of file
+     * @return Raster
+     * @throws IOException Exception while rading wile
+     */
     private static Raster getRasterByGeoTiff(String fileName) throws IOException {
         GeoTiffReader reader = new GeoTiffReader(new File(fileName));
         GridCoverage2D coverage = reader.read(null);
@@ -136,6 +170,12 @@ public final class AlgorithmsResultCalculator {
         return image.getData();
     }
 
+    /**
+     * Get list of paths with data from input directories
+     *
+     * @param storeDirectory Input store directory
+     * @return List of paths with data
+     */
     private List<String> listFilesForFolder(String storeDirectory) {
         try (Stream<Path> stream = Files.walk(Paths.get(storeDirectory), DEPTH_OF_READING_DATA_IN_DIRECTORY)) {
             return stream
@@ -148,6 +188,12 @@ public final class AlgorithmsResultCalculator {
         }
     }
 
+    /**
+     * Get path for result of measuring and create begin data if it not exists
+     *
+     * @param resultFilePath Name of path of measuring result
+     * @return Path of measuring result
+     */
     private Path getResultPath(String resultFilePath) {
         File file = new File(resultFilePath);
 
@@ -157,7 +203,8 @@ public final class AlgorithmsResultCalculator {
                 Files.write(
                         file.toPath(),
                         "Name,Ratio,Time,Size,Parameters,Type\n".getBytes(),
-                        StandardOpenOption.APPEND);
+                        StandardOpenOption.APPEND
+                );
             } else {
                 LOG.info(() -> "The result file has already been created");
             }
@@ -168,28 +215,52 @@ public final class AlgorithmsResultCalculator {
         return file.toPath();
     }
 
+    /**
+     * Parse raster file of Float64 data
+     *
+     * @param fileName Name of raster file
+     * @return Array of double data
+     * @throws IOException Exception while reading file
+     */
     private static double[] parseRasterFileDouble(String fileName) throws IOException {
         Raster inputRaster = getRasterByGeoTiff(fileName);
 
         DataBuffer originalImage = inputRaster.getDataBuffer();
-        double[] newByteArray = new double[inputRaster.getWidth() * inputRaster.getHeight()];
+        double[] arrayOfRasterData = new double[inputRaster.getWidth() * inputRaster.getHeight()];
         for (int i = 0; i < originalImage.getSize(); i++) {
-            newByteArray[i] = originalImage.getElemDouble(i);
+            arrayOfRasterData[i] = originalImage.getElemDouble(i);
         }
-        return newByteArray;
+        return arrayOfRasterData;
     }
 
+    /**
+     * Parse raster file of uint16 data
+     *
+     * @param fileName Name of raster file
+     * @return Array of int data
+     * @throws IOException Exception while reading file
+     */
     private static int[] parseRasterFileInt(String fileName) throws IOException {
         Raster inputRaster = getRasterByGeoTiff(fileName);
 
         DataBuffer originalImage = inputRaster.getDataBuffer();
-        int[] newByteArray = new int[inputRaster.getWidth() * inputRaster.getHeight()];
-        for (int i = 0; i < newByteArray.length; i++) {
-            newByteArray[i] = originalImage.getElem(i);
+        int[] arrayOfRasterData = new int[inputRaster.getWidth() * inputRaster.getHeight()];
+        for (int i = 0; i < arrayOfRasterData.length; i++) {
+            arrayOfRasterData[i] = originalImage.getElem(i);
         }
-        return newByteArray;
+        return arrayOfRasterData;
     }
 
+    /**
+     * Write measuring for int data to file
+     *
+     * @param path            Path to file
+     * @param compressor      Compressor
+     * @param data            Int data
+     * @param time            Time of measuring
+     * @param typeOfOperation Type of operation
+     * @throws IOException Exception while writing result of measuring
+     */
     private void writeMeasuringToFile(Path path,
                                       ICompressor compressor,
                                       int[] data,
@@ -213,6 +284,16 @@ public final class AlgorithmsResultCalculator {
         );
     }
 
+    /**
+     * Write measuring for double data to file
+     *
+     * @param path            Path to file
+     * @param compressor      Compressor
+     * @param data            Double data
+     * @param time            Time of measuring
+     * @param typeOfOperation Type of operation
+     * @throws IOException Exception while writing result of measuring
+     */
     private void writeMeasuringToFile(Path path,
                                       ICompressor compressor,
                                       double[] data,

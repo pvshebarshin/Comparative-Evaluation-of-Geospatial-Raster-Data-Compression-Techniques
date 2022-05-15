@@ -9,16 +9,8 @@ public class Measuring {
     private String parameters;
     private String type;
 
-    public Measuring(String name, double ratio, long time, long size, String parameters, String type) {
-        this.name = name;
-        this.ratio = ratio;
-        this.time = time;
-        this.size = size;
-        this.parameters = parameters;
-        this.type = type;
-    }
-
     public Measuring() {
+        // It is empty because objects created by builder
     }
 
     public static Builder newBuilder() {
@@ -27,7 +19,12 @@ public class Measuring {
 
     @Override
     public String toString() {
-        return name + "," + ratio + "," + time + "," + size + "," + parameters + "," + type;
+        return name + ","
+                + ratio + ","
+                + time + ","
+                + size + ","
+                + parameters + ","
+                + type;
     }
 
     public class Builder {
