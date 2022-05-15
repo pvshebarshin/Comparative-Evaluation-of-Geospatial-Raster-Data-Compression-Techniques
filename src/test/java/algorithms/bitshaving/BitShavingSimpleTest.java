@@ -37,6 +37,17 @@ public class BitShavingSimpleTest {
         }
     }
 
+    @Test
+    public void bitShavingFloatTest() {
+        float[] value = {Float.MAX_VALUE};
+        BitShavingFloat bitShavingDouble = new BitShavingFloat(parameters.bits);
+        if (parameters.bits < 23) {
+            Assertions.assertNotEquals(Float.MAX_VALUE, bitShavingDouble.encode(value)[0]);
+        } else {
+            Assertions.assertEquals(Float.MAX_VALUE, bitShavingDouble.encode(value)[0]);
+        }
+    }
+
     private static class Parameters {
         private final int bits;
 
