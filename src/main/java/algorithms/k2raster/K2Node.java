@@ -4,6 +4,7 @@ import algorithms.utils.BitMatrix;
 import algorithms.utils.TypeUtils;
 
 public class K2Node {
+
     private boolean min;
     private boolean max;
     private K2Node parent;
@@ -42,7 +43,7 @@ public class K2Node {
             }
         }
 
-        if (max != min && size > 2) {
+        if (max != min && size > 1) {
             makeChildren(matrix, size);
         } else {
             this.matrix = matrix;
@@ -170,5 +171,9 @@ public class K2Node {
 
     public K2Node[] getChildren() {
         return children;
+    }
+
+    public K2Node getParent() {
+        return parent;
     }
 }
