@@ -274,7 +274,7 @@ public final class AlgorithmsResultCalculator {
                                 .setName(compressor.toString())
                                 .setRatio(DeflaterUtils.getRatio())
                                 .setTime(time)
-                                .setSize(data.length * 8L)
+                                .setSize(data.length * 4L)
                                 .setParameters(compressor.getParameters())
                                 .setType(typeOfOperation)
                                 .build()
