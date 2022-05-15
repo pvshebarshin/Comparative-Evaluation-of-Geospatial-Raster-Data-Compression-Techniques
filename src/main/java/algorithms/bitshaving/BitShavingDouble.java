@@ -9,8 +9,9 @@ public class BitShavingDouble {
 
     /**
      * Getting bit Mask for shaving
-     * @param bitN number of bits
-     * @return bit mask
+     *
+     * @param bitN Number of bits
+     * @return Bit mask
      */
     private static long getBitMask(int bitN) {
         if (bitN >= FRACTIONAL_64_BIT) {
@@ -27,9 +28,9 @@ public class BitShavingDouble {
     /**
      * Shave n bits off the double
      *
-     * @param value   original floating point
-     * @param bitMask bitMask from getBitMask()
-     * @return modified double
+     * @param value   Original floating point
+     * @param bitMask BitMask from getBitMask()
+     * @return Modified double
      */
     private double bitShaveForDouble(double value, long bitMask) {
         if (Double.isNaN(value)) {
@@ -43,8 +44,8 @@ public class BitShavingDouble {
     /**
      * Encoder of algorithm BitShaving
      *
-     * @param data double data
-     * @return shaved double data
+     * @param data Double data
+     * @return Shaved double data
      */
     public double[] encode(double[] data) {
         for (int i = 0; i < data.length; i++) {

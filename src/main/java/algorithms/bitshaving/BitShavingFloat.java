@@ -9,8 +9,9 @@ public class BitShavingFloat {
 
     /**
      * Getting bit Mask for shaving
-     * @param bitN number of bits
-     * @return bit mask
+     *
+     * @param bitN Number of bits
+     * @return Bit mask
      */
     private static int getBitMaskForFloat(int bitN) {
         if (bitN >= FRACTIONAL_32_BIT) {
@@ -27,9 +28,9 @@ public class BitShavingFloat {
     /**
      * Shave n bits off the float
      *
-     * @param value   original floating point
-     * @param bitMask bitMask from getBitMask()
-     * @return modified float
+     * @param value   Original floating point
+     * @param bitMask BitMask from getBitMask()
+     * @return Mmodified float
      */
     public static float bitShave(float value, int bitMask) {
         if (Float.isNaN(value)) {
@@ -44,8 +45,8 @@ public class BitShavingFloat {
     /**
      * Encoder of algorithm BitShaving
      *
-     * @param data float data
-     * @return shaved float data
+     * @param data Float data
+     * @return Shaved float data
      */
     public float[] encode(float[] data) {
         for (int i = 0; i < data.length; i++) {
