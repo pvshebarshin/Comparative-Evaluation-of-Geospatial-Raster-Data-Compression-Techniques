@@ -9,6 +9,12 @@ public final class TypeUtils {
     private TypeUtils() {
     }
 
+    /**
+     * Turns double number into an array of bytes
+     *
+     * @param value Double value
+     * @return Representation of the double value in bytes
+     */
     public static byte[] doubleToByteArray(double value) {
         long data = Double.doubleToRawLongBits(value);
         return new byte[]{
@@ -23,6 +29,22 @@ public final class TypeUtils {
         };
     }
 
+    /**
+     * Turns an array of bytes into double
+     *
+     * @param array bytes of double value
+     * @return double value
+     */
+    public static double byteArrayToDouble(byte[] array) {
+        return ByteBuffer.wrap(array).getDouble();
+    }
+
+    /**
+     * Converting byte array to long
+     *
+     * @param data Bytes of long
+     * @return Long value
+     */
     public static long byteArrayToLong(byte[] data) {
         long result = 0L;
         for (int i = data.length; i > 0; i--) {
@@ -32,6 +54,12 @@ public final class TypeUtils {
         return result;
     }
 
+    /**
+     * Returns an array of bits representing a long number
+     *
+     * @param data Long value
+     * @return Long's bytes
+     */
     public static byte[] longToByteArray(long data) {
         int encodedZeroBytes = encodeZeroBytes(data);
         if (encodedZeroBytes > 3) {
@@ -45,6 +73,13 @@ public final class TypeUtils {
         return array;
     }
 
+    /**
+     * Auxiliary method for the method longToByteArray.
+     * Returns the number of zero bytes of long.
+     *
+     * @param value Long value
+     * @return number of zero bytes
+     */
     public static int encodeZeroBytes(long value) {
         int leadingZeroBytes = Long.numberOfLeadingZeros(value) / 8;
         if (leadingZeroBytes >= 4) {
@@ -53,10 +88,12 @@ public final class TypeUtils {
         return leadingZeroBytes;
     }
 
-    public static double byteArrayToDouble(byte[] array) {
-        return ByteBuffer.wrap(array).getDouble();
-    }
-
+    /**
+     * Turns an int array into a byte array
+     *
+     * @param array int array
+     * @return byte array
+     */
     public static byte[] intArrayToByteArray(int[] array) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(array.length * 4);
         IntBuffer intBuffer = byteBuffer.asIntBuffer();
@@ -64,6 +101,12 @@ public final class TypeUtils {
         return byteBuffer.array();
     }
 
+    /**
+     * Turns a byte array into an int array
+     *
+     * @param byteArray byte array
+     * @return int array
+     */
     public static int[] byteArrayToIntArray(byte[] byteArray) {
         IntBuffer intBuf = ByteBuffer.wrap(byteArray).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
         int[] array = new int[intBuf.remaining()];
@@ -73,6 +116,12 @@ public final class TypeUtils {
         return array;
     }
 
+    /**
+     * Turns an array of bytes into int
+     *
+     * @param data bytes of int value
+     * @return int value
+     */
     public static int byteArrayToInt(byte[] data) {
         return data[3] & 0xFF |
                 (data[2] & 0xFF) << 8 |
@@ -80,6 +129,12 @@ public final class TypeUtils {
                 (data[0] & 0xFF) << 24;
     }
 
+    /**
+     * Turns int number into an array of bytes
+     *
+     * @param value int value
+     * @return Representation of the int value in bytes
+     */
     public static byte[] intToByteArray(int value) {
         return new byte[]{
                 (byte) ((value >> 24) & 0xFF),
