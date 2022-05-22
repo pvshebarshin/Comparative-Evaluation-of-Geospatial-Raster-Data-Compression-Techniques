@@ -37,8 +37,7 @@ public class BitShavingDouble {
             return value;
         }
         long bits = Double.doubleToLongBits(value);
-        long shave = bits & bitMask;
-        return Double.longBitsToDouble(shave);
+        return Double.longBitsToDouble(bits & bitMask);
     }
 
     /**

@@ -1,13 +1,16 @@
 package compressors;
 
 import algorithms.sz.SZ;
+import algorithms.sz.SZByteCodeException;
+import algorithms.utils.mapping3D2D.MatrixConverter;
 import compressors.interfaces.DoubleCompressor;
+import compressors.interfaces.DoubleMatrixCompressor;
 import compressors.utils.DeflaterUtils;
 
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-public class SZCompressor implements DoubleCompressor {
+public class SZCompressor implements DoubleCompressor, DoubleMatrixCompressor {
 
     private final SZ sz;
 
@@ -28,6 +31,17 @@ public class SZCompressor implements DoubleCompressor {
         return sz.decode(DeflaterUtils.decompressByteArrayForSZ(data, size));
     }
 
+    @Override
+    public byte[] compressMatrix(double[][] data) throws SZByteCodeException {
+        MatrixConverter matrixConverter = new MatrixConverter();
+        return sz.encode(matrixConverter.matrixToArray(data));
+    }
+
+    @Override
+    public double[][] decompressMatrix(byte[] data) throws SZByteCodeException {
+        MatrixConverter matrixConverter = new MatrixConverter();
+        return matrixConverter.arrayToMatrix(sz.decode(data));
+    }
     @Override
     public String getParameters() {
         return String.valueOf(sz.getError());

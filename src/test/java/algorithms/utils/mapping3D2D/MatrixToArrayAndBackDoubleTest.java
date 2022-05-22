@@ -10,11 +10,11 @@ import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RunWith(value = Parameterized.class)
-public class MatrixConverterTest {
+public class MatrixToArrayAndBackDoubleTest {
 
     private final TestParameter testParameter;
 
-    public MatrixConverterTest(TestParameter testParameter) {
+    public MatrixToArrayAndBackDoubleTest(TestParameter testParameter) {
         this.testParameter = testParameter;
     }
 
@@ -22,42 +22,42 @@ public class MatrixConverterTest {
     public static Collection<TestParameter> data() {
         ArrayList<TestParameter> parameters = new ArrayList<>();
 
-        int[][] parameter = new int[8][8];
+        double[][] parameter = new double[8][8];
         for (int i = 0; i < parameter.length; i++) {
             for (int j = 0; j < parameter[0].length; j++) {
-                parameter[i][j] = ThreadLocalRandom.current().nextInt(1, 16);
+                parameter[i][j] = ThreadLocalRandom.current().nextDouble(-100, 100);
             }
         }
         parameters.add(new TestParameter(parameter));
 
-        parameter = new int[16][16];
+        parameter = new double[16][16];
         for (int i = 0; i < parameter.length; i++) {
             for (int j = 0; j < parameter[0].length; j++) {
-                parameter[i][j] = ThreadLocalRandom.current().nextInt(0, 128);
+                parameter[i][j] = ThreadLocalRandom.current().nextDouble(-1000, 1000);
             }
         }
         parameters.add(new TestParameter(parameter));
 
-        parameter = new int[32][32];
+        parameter = new double[32][32];
         for (int i = 0; i < parameter.length; i++) {
             for (int j = 0; j < parameter[0].length; j++) {
-                parameter[i][j] = ThreadLocalRandom.current().nextInt(0, 256);
+                parameter[i][j] = ThreadLocalRandom.current().nextDouble(-1000, 1000);
             }
         }
         parameters.add(new TestParameter(parameter));
 
-        parameter = new int[64][64];
+        parameter = new double[64][64];
         for (int i = 0; i < parameter.length; i++) {
             for (int j = 0; j < parameter[0].length; j++) {
-                parameter[i][j] = ThreadLocalRandom.current().nextInt(0, 512);
+                parameter[i][j] = ThreadLocalRandom.current().nextDouble(-1000, 1000);
             }
         }
         parameters.add(new TestParameter(parameter));
 
-        parameter = new int[128][128];
+        parameter = new double[128][128];
         for (int i = 0; i < parameter.length; i++) {
             for (int j = 0; j < parameter[0].length; j++) {
-                parameter[i][j] = ThreadLocalRandom.current().nextInt(0, 1024);
+                parameter[i][j] = ThreadLocalRandom.current().nextDouble(-1000, 1000);
             }
         }
         parameters.add(new TestParameter(parameter));
@@ -68,10 +68,7 @@ public class MatrixConverterTest {
     @Test
     public void matrixConverterTest() {
         MatrixConverter matrixConverter = new MatrixConverter();
-        int[][] res = matrixConverter.decodeMatrix(
-                matrixConverter.encodeMatrix(testParameter.data),
-                (int) Math.pow(testParameter.data.length, 2.0)
-        );
+        double[][] res = matrixConverter.arrayToMatrix(matrixConverter.matrixToArray(testParameter.data));
         Assertions.assertArrayEquals(
                 res,
                 testParameter.data
@@ -82,9 +79,9 @@ public class MatrixConverterTest {
 
         private static int i = 0;
 
-        private final int[][] data;
+        private final double[][] data;
 
-        public TestParameter(int[][] data) {
+        public TestParameter(double[][] data) {
             this.data = data;
         }
 

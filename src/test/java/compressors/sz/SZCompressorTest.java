@@ -9,7 +9,6 @@ import org.junit.runners.Parameterized;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.zip.DataFormatException;
 
@@ -25,7 +24,6 @@ public class SZCompressorTest {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<double[]> data() {
         ArrayList<double[]> parameters = new ArrayList<>();
-        Random random = new Random();
         for (int i = 1; i < 10; i++) {
             double[] mass = new double[i * 10];
             for (int j = 0; j < mass.length; j++) {

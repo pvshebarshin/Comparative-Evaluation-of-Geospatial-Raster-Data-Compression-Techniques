@@ -57,4 +57,24 @@ public class MatrixConverter {
         }
         return result;
     }
+
+    public double[] matrixToArray(double[][] data) {
+        double[] result = new double[data.length * data[0].length];
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                result[zCurveCoder.encode(i, j)] = data[i][j];
+            }
+        }
+        return result;
+    }
+
+    public double[][] arrayToMatrix(double[] data) {
+        double[][] result = new double[(int) Math.sqrt(data.length)][(int) Math.sqrt(data.length)];
+        int[] xy;
+        for (int i = 0; i < data.length; i++) {
+            xy = zCurveCoder.decode(i);
+            result[xy[0]][xy[1]] = data[i];
+        }
+        return result;
+    }
 }

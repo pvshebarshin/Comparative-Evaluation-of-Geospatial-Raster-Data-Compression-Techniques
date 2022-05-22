@@ -1,7 +1,6 @@
 package algorithms.sz;
 
 import java.util.Arrays;
-import java.util.zip.DataFormatException;
 
 import static algorithms.utils.TypeUtils.byteArrayToDouble;
 import static algorithms.utils.TypeUtils.byteArrayToInt;
@@ -16,6 +15,13 @@ public class SZ {
         this.error = error;
     }
 
+    /**
+     * Encode double data to byte code
+     *
+     * @param data Double array
+     * @return Coded double data
+     * @throws SZByteCodeException Exception appearing due to incorrect double data
+     */
     public byte[] encode(double[] data) throws SZByteCodeException {
         if (data.length < 4) {
             throw new ArithmeticException("Array size is too small. It must be more then 3");
@@ -76,6 +82,13 @@ public class SZ {
         return result;
     }
 
+    /**
+     * Decoding byte data by SZ algorithm
+     *
+     * @param data Coded data
+     * @return Decoded data
+     * @throws SZByteCodeException Exception appearing due to incorrect byte code
+     */
     public double[] decode(byte[] data) throws SZByteCodeException {
         int indexDecode = 0;
         byte[] byteArray = new byte[8];
@@ -128,6 +141,15 @@ public class SZ {
         return result;
     }
 
+    /**
+     * Finding the best solution of all predictors
+     *
+     * @param pnf   Predicted value by Preceding Neighbor Fitting
+     * @param lcf   Predicted value by Linear-Curve Fitting
+     * @param qcf   Predicted value by Quadratic-Curve Fitting
+     * @param value Origin value
+     * @return Char which shows the best solution
+     */
     private char getBestFitSolution(double pnf, double lcf, double qcf, double value) {
         if (Math.abs(pnf - value) < Math.abs(lcf - value)
                 && Math.abs(pnf - value) < Math.abs(qcf - value)

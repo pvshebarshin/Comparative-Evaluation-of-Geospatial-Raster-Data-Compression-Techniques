@@ -3,11 +3,12 @@ package compressors;
 import algorithms.k2raster.K2Tree;
 import algorithms.utils.mapping3D2D.MatrixConverter;
 import compressors.interfaces.IntCompressor;
+import compressors.interfaces.IntMatrixCompressor;
 import compressors.utils.DeflaterUtils;
 
 import java.io.IOException;
 
-public class K2RasterCompressor extends KRasterCompressor implements IntCompressor {
+public class K2RasterCompressor extends KRasterCompressor implements IntCompressor, IntMatrixCompressor {
 
     @Override
     public byte[] compress(int[] data) throws IOException {
@@ -23,6 +24,7 @@ public class K2RasterCompressor extends KRasterCompressor implements IntCompress
         return matrixConverter.decodeArray(k2Tree.toMatrix(), k2Tree.getZMassSize());
     }
 
+    @Override
     public byte[] compressMatrix(int[][] data) {
         MatrixConverter matrixConverter = new MatrixConverter();
         K2Tree k2Tree = new K2Tree(matrixConverter.encodeMatrix(data), data.length * data[0].length);
@@ -31,6 +33,7 @@ public class K2RasterCompressor extends KRasterCompressor implements IntCompress
         );
     }
 
+    @Override
     public int[][] decompressMatrix(byte[] data) {
         MatrixConverter matrixConverter = new MatrixConverter();
         K2Tree k2Tree = K2Tree.deserialize(data);
